@@ -12,10 +12,17 @@ app.get('/questions', (req, res) => {
   const results = [];
   fs.createReadStream('server/questions.csv') // 確認路徑正確
     .pipe(csv())
-    .on('data', (data) => results.push(data))
+    .on('data', (data) => {
+      results.push(data);
+    })
     .on('end', () => {
       console.log('CSV Data:', results); // 調試輸出
-      res.json(results);
+      res.json(results.map(question => ({
+        題目: question.題目,
+        倒數時間: question.倒數時間,
+        正確答案: question.正確答案,
+        分數: parseInt(question.分數) // 確保分數是數字格式
+      })));
     })
     .on('error', (error) => {
       console.error('Error reading CSV:', error);

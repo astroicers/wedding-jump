@@ -2,7 +2,7 @@
   <div>
     <!-- 頭部，可以包括標題或導航 -->
     <header>
-      <h1>我的遊戲</h1>
+      <h1>Wedding Jump</h1>
     </header>
 
     <!-- 主內容區，NuxtPage 用於渲染當前頁面的組件 -->
@@ -12,7 +12,7 @@
 
     <!-- 頁腳，可以包括版權信息或連結 -->
     <footer>
-      <p>版權所有 © 2023 我的遊戲公司</p>
+      <p>版權所有 © 2024 Fall in Love</p>
     </footer>
   </div>
 </template>

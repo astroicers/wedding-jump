@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useNuxtApp } from '#app';
 
@@ -45,9 +45,15 @@ function move(e) {
 
 onMounted(() => {
   if ($websocket) {
+    console.log('WebSocket connected in game.vue');
+    $websocket.onopen = () => {
+      console.log('WebSocket connection opened');
+    };
+
     $websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.type === 'newPlayer' && data.id !== username) {
+      console.log('Received message from server', data);
+      if (data.type === 'newPlayer' && data.id !== username && data.id !== 'quiz_master') {
         if (!players.value.find(p => p.id === data.id)) {
           players.value.push({
             id: data.id,
@@ -55,19 +61,33 @@ onMounted(() => {
             y: data.y
           });
         }
-      } else if (data.type === 'positionUpdate') {
+      } else if (data.type === 'positionUpdate' && data.id !== 'quiz_master') {
         const player = players.value.find(p => p.id === data.id);
         if (player) {
           player.x = data.x;
           player.y = data.y;
         }
-      } else if (data.type === 'playerLeft') {
+      } else if (data.type === 'playerLeft' && data.id !== 'quiz_master') {
         players.value = players.value.filter(p => p.id !== data.id);
+      } else if (data.type === 'answer' && data.id !== 'quiz_master') {
+        console.log('Received answer from server', data);
+        const playerChoice = position.value.y < 50 ? 'O' : 'X'; // Y 坐標小於 50 代表選擇 O
+        const isCorrect = playerChoice === data.correctAnswer;
+        const scoreMessage = {
+          type: 'scoreUpdate',
+          id: username,
+          isCorrect,
+          score: isCorrect ? data.score : 0
+        };
+        $websocket.send(JSON.stringify(scoreMessage));
+        console.log('Sent score update to server', scoreMessage);
       }
     };
 
     // 加入遊戲
-    $websocket.send(JSON.stringify({ type: 'join', name: username }));
+    const joinMessage = { type: 'join', name: username };
+    $websocket.send(JSON.stringify(joinMessage));
+    console.log('Sent join message', joinMessage);
   }
 });
 
@@ -91,7 +111,8 @@ const playerStyle = (player) => ({
   height: 100vh;
   width: 100vw;
   position: relative;
-  background: url('/path_to_your_image.jpg') no-repeat center center; /* 背景圖片 */
+  background: url('/path_to_your_image.jpg') no-repeat center center;
+  /* 背景圖片 */
   background-size: cover;
 }
 
@@ -99,18 +120,22 @@ const playerStyle = (player) => ({
   width: 100%;
   text-align: center;
   position: relative;
-  height: 400px; /* 增加高度 */
+  height: 400px;
+  /* 增加高度 */
 }
 
-.top, .bottom {
+.top,
+.bottom {
   margin: 0;
   padding: 20px;
-  font-size: 96px; /* 增加字體大小 */
+  font-size: 96px;
+  /* 增加字體大小 */
 }
 
 hr {
   border: none;
-  height: 10px; /* 增加高度 */
+  height: 10px;
+  /* 增加高度 */
   background-color: black;
   width: 100%;
 }

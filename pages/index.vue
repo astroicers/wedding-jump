@@ -8,13 +8,38 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-const { $websocket } = useNuxtApp(); // 確保你使用的是 $websocket 而不是 websocket 變量
+const { $websocket } = useNuxtApp();
 const name = ref('');
 const router = useRouter();
+const existingNames = ref([]);
+
+onMounted(() => {
+  if ($websocket) {
+    $websocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'existingPlayers') {
+        existingNames.value = data.names;
+      }
+    };
+    if ($websocket.readyState === WebSocket.OPEN) {
+      $websocket.send(JSON.stringify({ type: 'requestExistingPlayers' }));
+    } else {
+      $websocket.onopen = () => {
+        $websocket.send(JSON.stringify({ type: 'requestExistingPlayers' }));
+      };
+    }
+  }
+});
 
 function joinGame() {
   console.log('加入遊戲按鈕被點擊'); // 用於調試
-  if (name.value.trim()) {
+  if (name.value.trim().length === 0) {
+    alert("請輸入名字");
+  } else if (name.value.length > 10) {
+    alert("名字不能超過10個字");
+  } else if (existingNames.value.includes(name.value.trim())) {
+    alert("該名稱已被使用，請換一個名稱");
+  } else {
     if ($websocket && $websocket.readyState === WebSocket.OPEN) {
       console.log('發送加入遊戲請求', { type: 'join', name: name.value }); // 用於調試
       $websocket.send(JSON.stringify({ type: 'join', name: name.value }));
@@ -22,13 +47,11 @@ function joinGame() {
     } else {
       console.error('WebSocket is not connected.');
     }
-  } else {
-    alert("請輸入名字");
   }
 }
 </script>
 
-<style>
+<style scoped>
 .join-game {
   display: flex;
   flex-direction: column;

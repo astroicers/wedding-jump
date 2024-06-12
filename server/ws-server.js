@@ -38,6 +38,10 @@ wss.on('connection', ws => {
     } else if (data.type === 'answer') {
       console.log('Broadcasting answer', data);
       broadcast(data);
+    } else if (data.type === 'requestExistingPlayers') {
+      // 返回當前所有玩家名稱
+      const names = players.map(player => player.id);
+      ws.send(JSON.stringify({ type: 'existingPlayers', names }));
     }
   });
 

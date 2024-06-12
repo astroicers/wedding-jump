@@ -1,18 +1,23 @@
 <template>
   <div class="quiz-container">
     <div class="question-area">
-      <div v-if="currentQuestion">
-        <h1>{{ currentQuestion.題目 }}</h1>
-        <div v-if="countdown > 0">
-          <h2>倒數計時: {{ countdown }} 秒</h2>
-        </div>
-        <div v-else>
-          <h2>正確答案: {{ currentQuestion.正確答案 }}</h2>
-          <button @click="nextQuestion">下一題</button>
-        </div>
+      <div v-if="!gameStarted">
+        <button class="large-button" @click="startGame">開始</button>
       </div>
       <div v-else>
-        <h1>所有題目已經完成！</h1>
+        <div v-if="currentQuestion">
+          <h1>{{ currentQuestion.題目 }}</h1>
+          <div v-if="countdown > 0">
+            <h2>倒數計時: {{ countdown }} 秒</h2>
+          </div>
+          <div v-else>
+            <h2>正確答案: {{ currentQuestion.正確答案 }}</h2>
+            <button class="large-button" @click="nextQuestion">下一題</button>
+          </div>
+        </div>
+        <div v-else>
+          <h1>所有題目已經完成！</h1>
+        </div>
       </div>
     </div>
     <div class="scoreboard">
@@ -86,6 +91,20 @@
   font-size: 40px; /* 文字放大兩倍 */
   font-weight: bold;
 }
+
+.large-button {
+  padding: 20px 40px; /* 增加按鈕的填充空間 */
+  font-size: 1.5em; /* 放大按鈕文字 */
+  cursor: pointer;
+  border-radius: 8px; /* 增加圓角 */
+  border: none; /* 移除邊框 */
+  background-color: #007BFF; /* 設置背景色 */
+  color: white; /* 設置文字顏色 */
+}
+
+.large-button:hover {
+  background-color: #0056b3; /* 設置懸停時的背景色 */
+}
 </style>
 
 <script setup>
@@ -99,6 +118,7 @@ const questions = ref([]);
 const currentQuestionIndex = ref(0);
 const countdown = ref(0);
 const scores = ref({});
+const gameStarted = ref(false); // 添加控制變量來管理問答遊戲的開始狀態
 const currentQuestion = computed(() => {
   if (currentQuestionIndex.value !== null && currentQuestionIndex.value < questions.value.length) {
     return questions.value[currentQuestionIndex.value];
@@ -117,7 +137,6 @@ onMounted(async () => {
   try {
     const response = await axios.get('http://localhost:3002/questions');
     questions.value = response.data;
-    startCountdown();
   } catch (error) {
     console.error('Error fetching questions:', error);
   }
@@ -167,6 +186,11 @@ function startCountdown() {
       }
     }, 1000);
   }
+}
+
+function startGame() {
+  gameStarted.value = true;
+  startCountdown();
 }
 
 function nextQuestion() {

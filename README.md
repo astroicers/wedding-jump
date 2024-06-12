@@ -1,76 +1,66 @@
-# Nuxt 3 Minimal Starter
+# Wedding Jump
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+`Wedding Jump` 是一個基於 Vue.js 和 WebSocket 的多人互動遊戲專案。玩家可以加入遊戲、回答問題並在排行榜上競爭。
 
-## Setup
+## 安裝
 
-Make sure to install the dependencies:
+1. 克隆這個倉庫到本地：
 
-```bash
-# npm
-npm install
+    ```bash
+    git clone https://github.com/your-username/wedding-jump.git
+    cd wedding-jump
+    ```
 
-# pnpm
-pnpm install
+2. 安裝所需的依賴：
 
-# yarn
-yarn install
+    ```bash
+    npm install
+    ```
 
-# bun
-bun install
+## 題目
+
+`questions.csv` 文件用於存儲問答遊戲中的題目，每一行代表一個問題，格式如下：
+
+```
+題目,倒數時間,正確答案,分數
+"1+1=2?",5,O,10
+"地球是平的嗎?",5,X,15
+"5乘以6等於30嗎?",5,O,30
 ```
 
-## Development Server
+- **題目**：問題文本
+- **倒數時間**：回答問題的時間（秒）
+- **正確答案**：問題的正確答案（O 表示是，X 表示否）
+- **分數**：回答正確後獲得的分數
 
-Start the development server on `http://localhost:3000`:
+## 運行
 
-```bash
-# npm
-npm run dev
+1. 啟動 WebSocket 伺服器：
 
-# pnpm
-pnpm run dev
+    ```bash
+    node server/ws-server.js
+    ```
 
-# yarn
-yarn dev
+2. 啟動 API 伺服器：
 
-# bun
-bun run dev
-```
+    ```bash
+    node server/api.js
+    ```
 
-## Production
+3. 啟動前端開發伺服器：
 
-Build the application for production:
+    ```bash
+    npm run dev
+    ```
 
-```bash
-# npm
-npm run build
+    前端開發伺服器啟動後，可以在瀏覽器中訪問 `http://localhost:3000` 查看遊戲。
 
-# pnpm
-pnpm run build
+## 功能
 
-# yarn
-yarn build
+- **加入遊戲**：玩家可以通過輸入名字加入遊戲。
+- **回答問題**：玩家可以參加問答遊戲，並在排行榜上競爭。
+- **實時更新**：使用 WebSocket 技術實現實時數據更新。
 
-# bun
-bun run build
-```
+## 授權
 
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-# wedding-jump
+此專案採用 MIT 許可證。詳情請參閱 [LICENSE](LICENSE) 文件。

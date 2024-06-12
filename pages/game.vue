@@ -97,8 +97,10 @@ const playerStyle = (player) => ({
   top: `${player.y}%`,
   transform: 'translate(-50%, -50%)',
   backgroundColor: player.id === username ? 'yellow' : 'lightblue',
-  padding: '5px',
-  borderRadius: '5px'
+  padding: '20px',
+  borderRadius: '10px',
+  fontSize: '32px', // 調整玩家名稱字體大小
+  userSelect: 'none' // 防止文字選中
 });
 </script>
 
@@ -111,7 +113,7 @@ const playerStyle = (player) => ({
   height: 100vh;
   width: 100vw;
   position: relative;
-  background: url('/path_to_your_image.jpg') no-repeat center center;
+  background: url('https://www.freecodecamp.org/news/content/images/size/w2000/2021/06/w-qjCHPZbeXCQ-unsplash.jpg') no-repeat center center;
   /* 背景圖片 */
   background-size: cover;
 }
@@ -128,8 +130,9 @@ const playerStyle = (player) => ({
 .bottom {
   margin: 0;
   padding: 20px;
-  font-size: 96px;
+  font-size: 120px;
   /* 增加字體大小 */
+  user-select: none; /* 防止文字選中 */
 }
 
 hr {

@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # 安裝依賴
-RUN npm install
+RUN npm install pm2 -g && npm install
 
 # 複製應用代碼到容器
 COPY . .

@@ -18,6 +18,7 @@ RUN npm run build
 
 # 暴露應用運行端口
 EXPOSE 3000
+EXPOSE 3001
 
 # 設置啟動命令
 CMD ["npm", "start"]

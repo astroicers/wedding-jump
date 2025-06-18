@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <h1>WebSocket Connection Test</h1>
+    <div id="status">連接中...</div>
+    <div id="messages"></div>
+
+    <script>
+        const status = document.getElementById('status');
+        const messages = document.getElementById('messages');
+        
+        function log(message) {
+            const div = document.createElement('div');
+            div.textContent = new Date().toLocaleTimeString() + ': ' + message;
+            messages.appendChild(div);
+            console.log(message);
+        }
+
+        try {
+            const ws = new WebSocket('ws://localhost:8001');
+            
+            ws.onopen = function() {
+                status.textContent = '✅ WebSocket 連接成功！';
+                status.style.color = 'green';
+                log('WebSocket 連接已建立');
+            };
+            
+            ws.onmessage = function(event) {
+                log('收到消息: ' + event.data);
+            };
+            
+            ws.onclose = function(event) {
+                status.textContent = '❌ WebSocket 連接已關閉';
+                status.style.color = 'red';
+                log('WebSocket 連接關閉，代碼: ' + event.code);
+            };
+            
+            ws.onerror = function(error) {
+                status.textContent = '❌ WebSocket 連接錯誤';
+                status.style.color = 'red';
+                log('WebSocket 錯誤: ' + error);
+            };
+            
+        } catch (error) {
+            status.textContent = '❌ 無法創建 WebSocket 連接';
+            status.style.color = 'red';
+            log('創建 WebSocket 失敗: ' + error);
+        }
+    </script>
+</body>
+</html>

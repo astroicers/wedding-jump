@@ -1,0 +1,24 @@
+services:
+  wedding-jump:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    container_name: wedding-jump-app
+    restart: unless-stopped
+    ports:
+      - "8000:3000"
+      - "8001:3001"
+      - "8002:3002"
+    environment:
+      - NODE_ENV=development
+      - NUXT_HOST=0.0.0.0
+      - NUXT_PUBLIC_WS_URL=ws://localhost:8001
+      - NUXT_PUBLIC_API_URL=http://localhost:8002
+    volumes:
+      - ./server/questions.csv:/app/server/questions.csv:ro
+    networks:
+      - wedding-jump-network
+
+networks:
+  wedding-jump-network:
+    driver: bridge

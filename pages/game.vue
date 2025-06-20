@@ -1,8 +1,50 @@
 <template>
-  <div class="game-board" @click="move">
+  <!-- 登入頁面 -->
+  <div v-if="!joinedRoom" class="login-screen">
+    <div class="login-card">
+      <h1>🎮 加入 Quiz 遊戲</h1>
+      <form @submit.prevent="joinRoom" class="login-form">
+        <div class="input-group">
+          <label for="playerName">👤 玩家名稱:</label>
+          <input 
+            id="playerName"
+            v-model="playerName" 
+            type="text" 
+            placeholder="輸入您的名稱" 
+            required
+            maxlength="20"
+            class="name-input"
+          />
+        </div>
+        <div class="input-group">
+          <label for="roomId">🏠 房間號:</label>
+          <input 
+            id="roomId"
+            v-model="roomId" 
+            type="number" 
+            placeholder="輸入房間號" 
+            required
+            class="room-input"
+          />
+        </div>
+        <button type="submit" class="join-btn" :disabled="isJoining">
+          <span v-if="isJoining">正在加入...</span>
+          <span v-else>🚀 加入遊戲</span>
+        </button>
+      </form>
+      
+      <div v-if="joinError" class="error-message">
+        {{ joinError }}
+      </div>
+    </div>
+  </div>
+
+  <!-- 遊戲頁面 -->
+  <div v-else class="game-board" @click="move">
     <div class="game-header">
       <div class="player-info">
-        <span class="player-name">{{ username }}</span>
+        <span class="player-name">{{ playerName }}</span>
+        <span class="room-info">🏠 房間: {{ roomId }}</span>
         <span class="connection-status" :class="{ 'connected': isConnected }">{{ isConnected ? '🟢 已連線' : '🔴 未連線' }}</span>
       </div>
       <div class="game-stats">
@@ -35,7 +77,7 @@
         :key="player.id" 
         :style="playerStyle(player)"
         class="player-avatar"
-        :class="{ 'current-player': player.id === username }"
+        :class="{ 'current-player': player.id === playerName || player.name === playerName }"
       >
         <div class="player-bubble">
           <span class="player-emoji">👤</span>
@@ -56,14 +98,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useNuxtApp } from '#app';
 
 const route = useRoute();
-const username = route.query.name;
+const router = useRouter();
 const { $websocket } = useNuxtApp();
 
+// 登入狀態
+const joinedRoom = ref(false);
+const playerName = ref(route.query.name || '');
+const roomId = ref(route.query.room || '');
+const playerId = ref(''); // 唯一玩家ID
+const isJoining = ref(false);
+const joinError = ref('');
+
+// 遊戲狀態
 const players = ref([]);
 const position = ref({ x: 50, y: 50 });
 const isConnected = ref(false);
@@ -72,7 +123,339 @@ const showFeedback = ref(false);
 const feedbackType = ref('');
 const feedbackMessage = ref('');
 
+// LocalStorage keys for game
+const GAME_STORAGE_KEYS = {
+  PLAYER_ID: 'wedding_player_id',
+  PLAYER_NAME: 'wedding_player_name',
+  ROOM_ID: 'wedding_player_room_id',
+  JOINED_ROOM: 'wedding_player_joined',
+  POSITION: 'wedding_player_position',
+  NAME_TO_ID_MAP: 'wedding_name_to_id_map',
+  PLAYER_SCORES: 'wedding_player_scores'
+};
+
+// 生成唯一玩家ID
+const generatePlayerId = () => {
+  return 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+};
+
+// 獲取或創建玩家ID
+const getOrCreatePlayerId = (name) => {
+  if (typeof window === 'undefined') return '';
+  
+  // 檢查是否已有此名稱的ID映射
+  const nameToIdMap = JSON.parse(localStorage.getItem(GAME_STORAGE_KEYS.NAME_TO_ID_MAP) || '{}');
+  
+  if (nameToIdMap[name]) {
+    return nameToIdMap[name];
+  }
+  
+  // 創建新ID
+  const newId = generatePlayerId();
+  nameToIdMap[name] = newId;
+  localStorage.setItem(GAME_STORAGE_KEYS.NAME_TO_ID_MAP, JSON.stringify(nameToIdMap));
+  
+  console.log(`📝 Created new player ID: ${newId} for name: ${name}`);
+  return newId;
+};
+
+// 保存遊戲狀態
+const saveGameState = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(GAME_STORAGE_KEYS.PLAYER_ID, playerId.value);
+    localStorage.setItem(GAME_STORAGE_KEYS.PLAYER_NAME, playerName.value);
+    localStorage.setItem(GAME_STORAGE_KEYS.ROOM_ID, roomId.value);
+    localStorage.setItem(GAME_STORAGE_KEYS.JOINED_ROOM, joinedRoom.value.toString());
+    localStorage.setItem(GAME_STORAGE_KEYS.POSITION, JSON.stringify(position.value));
+  }
+};
+
+// 載入遊戲狀態
+const loadGameState = () => {
+  if (typeof window !== 'undefined') {
+    const savedPlayerId = localStorage.getItem(GAME_STORAGE_KEYS.PLAYER_ID);
+    const savedPlayerName = localStorage.getItem(GAME_STORAGE_KEYS.PLAYER_NAME);
+    const savedRoomId = localStorage.getItem(GAME_STORAGE_KEYS.ROOM_ID);
+    const savedJoinedRoom = localStorage.getItem(GAME_STORAGE_KEYS.JOINED_ROOM);
+    const savedPosition = localStorage.getItem(GAME_STORAGE_KEYS.POSITION);
+
+    if (savedPlayerId) playerId.value = savedPlayerId;
+    if (savedPlayerName) playerName.value = savedPlayerName;
+    if (savedRoomId) roomId.value = savedRoomId;
+    if (savedJoinedRoom) joinedRoom.value = savedJoinedRoom === 'true';
+    if (savedPosition) {
+      try {
+        position.value = JSON.parse(savedPosition);
+      } catch (e) {
+        console.error('Failed to parse saved position:', e);
+      }
+    }
+
+    // 如果有玩家名稱但沒有ID，創建ID
+    if (savedPlayerName && !savedPlayerId) {
+      playerId.value = getOrCreatePlayerId(savedPlayerName);
+      saveGameState(); // 保存新創建的ID
+    }
+  }
+};
+
+// 清理遊戲狀態
+const clearGameState = () => {
+  if (typeof window !== 'undefined') {
+    Object.values(GAME_STORAGE_KEYS).forEach(key => {
+      localStorage.removeItem(key);
+    });
+  }
+};
+
+// 如果URL已經有參數，直接嘗試加入
+onMounted(() => {
+  // 載入保存的狀態
+  loadGameState();
+  
+  // 確保玩家有ID
+  if (playerName.value && !playerId.value) {
+    playerId.value = getOrCreatePlayerId(playerName.value);
+    saveGameState();
+  }
+  
+  // 如果已經加入房間，重新初始化遊戲
+  if (joinedRoom.value && playerName.value && roomId.value) {
+    console.log('🔄 Restoring player session:', playerName.value, 'Room:', roomId.value, 'ID:', playerId.value);
+    initializeGame();
+  } else if (playerName.value && roomId.value) {
+    joinRoom();
+  }
+});
+
+const joinRoom = async () => {
+  if (!playerName.value.trim() || !roomId.value) {
+    joinError.value = '請填寫完整資料';
+    return;
+  }
+  
+  isJoining.value = true;
+  joinError.value = '';
+  
+  try {
+    await initializeGame();
+  } catch (error) {
+    console.error('Error joining room:', error);
+    joinError.value = error.message || '加入房間失敗，請檢查房間號是否正確';
+    isJoining.value = false;
+  }
+};
+
+const initializeGame = async () => {
+  console.log(`🎮 Initializing game for player: ${playerName.value} in room: ${roomId.value}`);
+  
+  if ($websocket) {
+    let connectionAttempts = 0;
+    const maxAttempts = 10;
+    
+    const connectPlayer = () => {
+      connectionAttempts++;
+      console.log(`🔗 Player connection attempt ${connectionAttempts}/${maxAttempts}`);
+      console.log(`📡 WebSocket readyState: ${$websocket.readyState}`);
+      
+      if ($websocket.readyState === WebSocket.OPEN) {
+        // 確保玩家有ID
+        if (!playerId.value) {
+          playerId.value = getOrCreatePlayerId(playerName.value);
+          saveGameState();
+        }
+        
+        const joinMessage = { 
+          type: 'joinRoom', 
+          playerName: playerName.value,
+          playerId: playerId.value,
+          roomId: parseInt(roomId.value)
+        };
+        console.log('📤 Sending join room message:', joinMessage);
+        
+        const success = $websocket.send(JSON.stringify(joinMessage));
+        console.log('📤 Send result:', success);
+        
+        if (success !== false) {
+          console.log('✅ Join room message sent successfully');
+          // 等待服務器回應
+        } else {
+          throw new Error('發送加入房間消息失敗');
+        }
+      } else if (connectionAttempts < maxAttempts) {
+        console.log(`⏳ WebSocket not ready (state: ${$websocket.readyState}), retrying in 500ms...`);
+        setTimeout(connectPlayer, 500);
+      } else {
+        throw new Error('WebSocket連接超時，請重新整理頁面');
+      }
+    };
+
+    // 監聽WebSocket連接狀態
+    window.addEventListener('websocket-connected', () => {
+      console.log('🌐 WebSocket connected event received, connecting player...');
+      setTimeout(connectPlayer, 100);
+    });
+
+    // 立即嘗試連接（如果已經連接）
+    setTimeout(connectPlayer, 100);
+
+    // 處理WebSocket消息
+    const handleWebSocketMessage = (event) => {
+      const data = event.detail;
+      console.log('📨 Game received WebSocket message:', data);
+      
+      if (data.type === 'joinedRoom') {
+        // 成功加入房間
+        console.log('🏠 Successfully joined room:', data);
+        joinedRoom.value = true;
+        isJoining.value = false;
+        
+        // 更新URL
+        router.replace({ 
+          query: { 
+            name: playerName.value, 
+            room: roomId.value 
+          } 
+        });
+        
+        // 初始化玩家位置
+        position.value = { x: data.x || 50, y: data.y || 50 };
+        
+        // 確保將自己添加到玩家列表中
+        const selfPlayer = {
+          id: data.playerName || playerName.value,
+          playerId: data.playerId || playerId.value,
+          name: data.playerName || playerName.value,
+          x: data.x || 50,
+          y: data.y || 50,
+          isQuizMaster: data.isQuizMaster || false
+        };
+        
+        // 檢查是否已存在，避免重複添加
+        if (!players.value.find(p => p.playerId === selfPlayer.playerId)) {
+          players.value.push(selfPlayer);
+          console.log(`👤 Self player added to list:`, selfPlayer);
+        }
+        
+        // 保存遊戲狀態
+        saveGameState();
+        
+      } else if (data.type === 'error') {
+        // 加入房間失敗
+        console.error('❌ Join room error:', data.message);
+        joinError.value = data.message;
+        isJoining.value = false;
+        
+      } else if (data.type === 'newPlayer') {
+        // 處理新玩家加入（包括自己和其他玩家）
+        const playerKey = data.playerId || data.id;
+        if (!players.value.find(p => p.playerId === playerKey || p.id === data.id)) {
+          const newPlayer = {
+            id: data.id, // 顯示名稱
+            playerId: data.playerId || data.id, // 唯一ID
+            name: data.name || data.id, // 玩家名稱
+            x: data.x || 50,
+            y: data.y || 50,
+            isQuizMaster: data.isQuizMaster || false
+          };
+          players.value.push(newPlayer);
+          console.log(`👤 Player added: ${data.id} (ID: ${newPlayer.playerId})`, newPlayer);
+          
+          // 如果是自己，同步位置數據（通過名稱比較）
+          if (data.id === playerName.value || data.name === playerName.value) {
+            position.value = { x: newPlayer.x, y: newPlayer.y };
+          }
+        }
+        
+      } else if (data.type === 'positionUpdate') {
+        // 處理玩家位置更新
+        const player = players.value.find(p => p.id === data.id || p.playerId === data.playerId);
+        if (player) {
+          player.x = data.x;
+          player.y = data.y;
+        }
+        
+      } else if (data.type === 'playerLeft') {
+        // 處理玩家離開
+        players.value = players.value.filter(p => p.id !== data.id && p.playerId !== data.playerId);
+        console.log(`👋 Player left: ${data.id}`);
+        
+      } else if (data.type === 'answer') {
+        // 處理答案廣播
+        console.log('📢 Received answer from server', data);
+        const playerChoice = position.value.y < 50 ? 'O' : 'X';
+        const isCorrect = playerChoice === data.correctAnswer;
+        const score = isCorrect ? data.score : 0;
+        
+        showAnswerFeedback(isCorrect, score);
+        
+        // 發送分數更新
+        if ($websocket && $websocket.readyState === WebSocket.OPEN) {
+          const scoreMessage = {
+            type: 'scoreUpdate',
+            id: playerName.value,
+            playerId: playerId.value,
+            score: score
+          };
+          $websocket.send(JSON.stringify(scoreMessage));
+          console.log('📊 Sent score update to server:', scoreMessage);
+        }
+        
+      } else if (data.type === 'roomClosed') {
+        // 房間關閉
+        alert('房間已關閉，請重新加入新的房間');
+        joinedRoom.value = false;
+        players.value = [];
+      }
+    };
+
+    // 監聽WebSocket狀態變化
+    const updateConnectionStatus = () => {
+      isConnected.value = $websocket && $websocket.readyState === WebSocket.OPEN;
+    };
+
+    window.addEventListener('websocket-connected', () => {
+      isConnected.value = true;
+      console.log('WebSocket status updated: connected');
+    });
+
+    window.addEventListener('websocket-disconnected', () => {
+      isConnected.value = false;
+      console.log('WebSocket status updated: disconnected');
+    });
+
+    window.addEventListener('websocket-error', () => {
+      isConnected.value = false;
+      console.log('WebSocket status updated: error');
+    });
+
+    // 監聽WebSocket消息
+    window.addEventListener('websocket-message', handleWebSocketMessage);
+    
+    // 初始狀態檢查
+    updateConnectionStatus();
+    
+    // 清理函數
+    const cleanup = () => {
+      window.removeEventListener('websocket-message', handleWebSocketMessage);
+      window.removeEventListener('websocket-connected', updateConnectionStatus);
+      window.removeEventListener('websocket-disconnected', updateConnectionStatus);
+      window.removeEventListener('websocket-error', updateConnectionStatus);
+    };
+    
+    // 在組件卸載時清理
+    onUnmounted(() => {
+      cleanup();
+    });
+    
+  } else {
+    throw new Error('WebSocket未初始化，請重新整理頁面');
+  }
+};
+
 function move(e) {
+  if (!joinedRoom.value) return;
+  
   const rect = e.currentTarget.getBoundingClientRect();
   const targetX = ((e.clientX - rect.left) / rect.width) * 100;
   const targetY = ((e.clientY - rect.top) / rect.height) * 100;
@@ -84,22 +467,31 @@ function move(e) {
   position.value = { x: newX, y: newY };
   currentChoice.value = newY < 50 ? 'O' : 'X';
 
-  // 更新玩家陣列中的當前玩家位置
-  const currentPlayer = players.value.find(p => p.id === username);
+  // 更新玩家陣列中的當前玩家位置（優先使用 playerId 匹配）
+  const currentPlayer = players.value.find(p => 
+    p.playerId === playerId.value || 
+    p.id === playerName.value || 
+    p.name === playerName.value
+  );
   if (currentPlayer) {
     currentPlayer.x = newX;
     currentPlayer.y = newY;
+    console.log(`Updated current player position:`, currentPlayer);
+  } else {
+    console.warn(`Current player not found in players array. PlayerName: ${playerName.value}, PlayerId: ${playerId.value}`);
+    console.log(`Available players:`, players.value);
   }
 
   // 發送移動數據到WebSocket服務器
   if ($websocket && $websocket.readyState === WebSocket.OPEN) {
     $websocket.send(JSON.stringify({
       type: 'move',
-      id: username,
+      id: playerName.value,
+      playerId: playerId.value,
       x: newX,
       y: newY
     }));
-    console.log(`Player ${username} moved to (${newX.toFixed(1)}, ${newY.toFixed(1)})`);
+    console.log(`Player ${playerName.value} moved to (${newX.toFixed(1)}, ${newY.toFixed(1)})`);
   } else {
     console.warn('WebSocket not connected, cannot send move data');
   }
@@ -115,112 +507,105 @@ function showAnswerFeedback(isCorrect, score) {
   }, 3000);
 }
 
-onMounted(() => {
-  // 監聽 WebSocket 狀態變化
-  const updateConnectionStatus = () => {
-    isConnected.value = $websocket && $websocket.readyState === WebSocket.OPEN;
-  };
-
-  // 監聽WebSocket連接狀態事件
-  window.addEventListener('websocket-connected', () => {
-    isConnected.value = true;
-    console.log('WebSocket status updated: connected');
-    
-    // 連接成功後立即加入遊戲
-    if ($websocket && $websocket.readyState === WebSocket.OPEN) {
-      const joinMessage = { type: 'join', name: username };
-      $websocket.send(JSON.stringify(joinMessage));
-      console.log('Sent join message after connection:', joinMessage);
-    }
-  });
-
-  window.addEventListener('websocket-disconnected', () => {
-    isConnected.value = false;
-    console.log('WebSocket status updated: disconnected');
-  });
-
-  window.addEventListener('websocket-error', () => {
-    isConnected.value = false;
-    console.log('WebSocket status updated: error');
-  });
-
-  // 監聽WebSocket消息事件
-  window.addEventListener('websocket-message', (event) => {
-    const data = event.detail;
-    console.log('Game received WebSocket message:', data);
-    
-    if (data.type === 'newPlayer' && data.id !== 'quiz_master') {
-      // 處理新玩家加入（包括自己）
-      if (!players.value.find(p => p.id === data.id)) {
-        const newPlayer = {
-          id: data.id,
-          x: data.x || 50,
-          y: data.y || 50
-        };
-        players.value.push(newPlayer);
-        console.log(`Player added: ${data.id}`, newPlayer);
-        
-        // 如果是自己，同步位置數據
-        if (data.id === username) {
-          position.value = { x: newPlayer.x, y: newPlayer.y };
-        }
-      }
-    } else if (data.type === 'positionUpdate' && data.id !== 'quiz_master') {
-      // 處理玩家位置更新
-      const player = players.value.find(p => p.id === data.id);
-      if (player) {
-        player.x = data.x;
-        player.y = data.y;
-      }
-    } else if (data.type === 'playerLeft' && data.id !== 'quiz_master') {
-      // 處理玩家離開
-      players.value = players.value.filter(p => p.id !== data.id);
-      console.log(`Player left: ${data.id}`);
-    } else if (data.type === 'answer') {
-      // 處理答案廣播
-      console.log('Received answer from server', data);
-      const playerChoice = position.value.y < 50 ? 'O' : 'X';
-      const isCorrect = playerChoice === data.correctAnswer;
-      const score = isCorrect ? data.score : 0;
-      
-      showAnswerFeedback(isCorrect, score);
-      
-      // 發送分數更新
-      if ($websocket && $websocket.readyState === WebSocket.OPEN) {
-        const scoreMessage = {
-          type: 'scoreUpdate',
-          id: username,
-          score: score
-        };
-        $websocket.send(JSON.stringify(scoreMessage));
-        console.log('Sent score update to server:', scoreMessage);
-      }
-    }
-  });
-
-  if ($websocket) {
-    console.log('WebSocket initialized in game.vue');
-    updateConnectionStatus();
-    
-    // 如果已經連接，立即加入遊戲
-    if ($websocket.readyState === WebSocket.OPEN) {
-      const joinMessage = { type: 'join', name: username };
-      $websocket.send(JSON.stringify(joinMessage));
-      console.log('Sent join message immediately:', joinMessage);
-    }
-  }
-});
-
 const playerStyle = (player) => ({
   position: 'absolute',
   left: `${player.x}%`,
   top: `${player.y}%`,
   transform: 'translate(-50%, -50%)',
-  zIndex: player.id === username ? 10 : 5
+  zIndex: (player.id === playerName.value || player.name === playerName.value) ? 10 : 5
 });
 </script>
 
 <style scoped>
+/* 登入頁面樣式 */
+.login-screen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.login-card h1 {
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 2.5rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.name-input, .room-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  transition: border-color 0.3s;
+}
+
+.name-input:focus, .room-input:focus {
+  outline: none;
+  border-color: #1e3c72;
+}
+
+.join-btn {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+  border: none;
+  padding: 1.25rem 2rem;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.join-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.join-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message {
+  background: #ffe6e6;
+  color: #cc0000;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  border: 1px solid #ffcccc;
+}
+
+/* 遊戲頁面樣式 */
 .game-board {
   height: 100vh;
   width: 100vw;
@@ -255,6 +640,15 @@ const playerStyle = (player) => ({
   font-weight: 600;
   font-size: 1.1rem;
   color: #333;
+}
+
+.room-info {
+  font-size: 0.8rem;
+  color: #1976d2;
+  background: #e3f2fd;
+  padding: 0.25rem 0.5rem;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
 .connection-status {
@@ -500,6 +894,14 @@ const playerStyle = (player) => ({
   .feedback-content {
     padding: 1.5rem 2rem;
     margin: 1rem;
+  }
+  
+  .login-card {
+    padding: 2rem;
+  }
+  
+  .login-card h1 {
+    font-size: 2rem;
   }
 }
 </style>

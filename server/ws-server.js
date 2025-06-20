@@ -1,17 +1,12 @@
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import https from 'https';
 import fs from 'fs';
+import roomManager from './room-manager.js';
 
 const PORT = process.env.WS_PORT || 3001;
-let players = new Map();
-let gameState = {
-  currentQuestion: null,
-  questionStartTime: null,
-  scores: new Map()
-};
 
 // Try to create HTTPS server for WSS, fallback to regular WS
-let server;
+let server = {};
 try {
   if (fs.existsSync('./ssl/cert.pem') && fs.existsSync('./ssl/key.pem')) {
     const httpsServer = https.createServer({
@@ -29,34 +24,13 @@ try {
   console.log('Fallback to insecure WebSocket server (WS)');
 }
 
-const wss = new WebSocketServer({ ...server, port: PORT });
+const wss = new WebSocketServer({ ...server, port: Number(PORT) });
 
-function broadcast(data, excludePlayer = null) {
+function globalBroadcast(data, excludePlayer = null) {
+  console.warn('⚠️ Using deprecated global broadcast - consider using room-based broadcasting');
   const message = JSON.stringify(data);
   let successCount = 0;
-  let failCount = 0;
-  
-  players.forEach((player, playerId) => {
-    if (excludePlayer && playerId === excludePlayer) return;
-    
-    try {
-      if (player.ws.readyState === player.ws.OPEN) {
-        player.ws.send(message);
-        successCount++;
-      } else {
-        // Remove disconnected players
-        players.delete(playerId);
-        failCount++;
-      }
-    } catch (error) {
-      console.error(`Failed to send message to player ${playerId}:`, error);
-      players.delete(playerId);
-      failCount++;
-    }
-  });
-  
-  const recipients = Array.from(players.keys()).filter(id => !excludePlayer || id !== excludePlayer);
-  console.log(`📡 Broadcast: ${data.type} to ${successCount} players (${failCount} failed) - Recipients: ${recipients.join(', ')}`);
+  return successCount;
 }
 
 function sanitizeInput(input) {
@@ -66,7 +40,7 @@ function sanitizeInput(input) {
 
 function validatePlayerName(name) {
   if (!name || typeof name !== 'string') return false;
-  if (name.length < 1 || name.length > 20) return false; // 增加到20字符以支持quiz_master
+  if (name.length < 1 || name.length > 20) return false;
   if (!/^[\w\u4e00-\u9fff\s]+$/.test(name)) return false;
   return true;
 }
@@ -75,7 +49,6 @@ wss.on('connection', (ws, req) => {
   const clientIP = req.socket.remoteAddress;
   console.log(`New client connected from ${clientIP}`);
   
-  // Set up ping-pong for connection health
   ws.isAlive = true;
   ws.on('pong', () => {
     ws.isAlive = true;
@@ -83,12 +56,16 @@ wss.on('connection', (ws, req) => {
   
   ws.on('message', (message) => {
     try {
-      const data = JSON.parse(message);
-      console.log('Received message:', data.type, 'from', data.id || data.name || ws.playerId || 'unknown');
+      const data = JSON.parse(message.toString());
+      console.log('Received message:', data.type, 'from', data.playerName || data.id || data.name || ws.playerId || 'unknown', 'playerId:', data.playerId || 'none');
       
       switch (data.type) {
-        case 'join':
-          handlePlayerJoin(ws, data);
+        case 'createRoom':
+          handleCreateRoom(ws, data);
+          break;
+          
+        case 'joinRoom':
+          handleJoinRoom(ws, data);
           break;
           
         case 'move':
@@ -107,6 +84,10 @@ wss.on('connection', (ws, req) => {
           handleExistingPlayersRequest(ws);
           break;
           
+        case 'requestLeaderboard':
+          handleLeaderboardRequest(ws, data);
+          break;
+          
         default:
           console.warn('Unknown message type:', data.type);
       }
@@ -117,7 +98,7 @@ wss.on('connection', (ws, req) => {
   });
   
   ws.on('close', (code, reason) => {
-    handlePlayerDisconnect(ws, code, reason);
+    handlePlayerDisconnect(ws, code, reason.toString());
   });
   
   ws.on('error', (error) => {
@@ -126,126 +107,216 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-function handlePlayerJoin(ws, data) {
-  const playerName = sanitizeInput(data.name);
+function handleCreateRoom(ws, data) {
+  const quizMasterName = sanitizeInput(data.quizMaster);
+  
+  if (!validatePlayerName(quizMasterName)) {
+    sendError(ws, '無效的Quiz Master名稱');
+    return;
+  }
+  
+  try {
+    // Generate a unique ID for the quiz master, using the name as base
+    const quizMasterPlayerId = `quiz_master_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const room = roomManager.createRoom(quizMasterName, quizMasterPlayerId);
+    const player = roomManager.joinRoom(room.id, quizMasterName, ws, quizMasterPlayerId);
+    
+    ws.playerId = quizMasterPlayerId;
+    ws.playerName = quizMasterName;
+    ws.roomId = room.id;
+    
+    ws.send(JSON.stringify({
+      type: 'roomCreated',
+      roomId: room.id,
+      quizMaster: quizMasterName,
+      playerId: quizMasterPlayerId,
+      playerName: quizMasterName,
+      isQuizMaster: true
+    }));
+    
+    console.log(`🎮 Quiz Master ${quizMasterName} created room ${room.id}`);
+  } catch (error) {
+    sendError(ws, error instanceof Error ? error.message : 'Unknown error');
+  }
+}
+
+function handleJoinRoom(ws, data) {
+  const playerName = sanitizeInput(data.playerName);
+  const playerId = sanitizeInput(data.playerId);
+  const roomId = parseInt(String(data.roomId));
+  
+  console.log(`🎯 HandleJoinRoom - playerName: ${playerName}, playerId: ${playerId}, roomId: ${roomId}`);
   
   if (!validatePlayerName(playerName)) {
+    console.log(`❌ Invalid player name: ${playerName}`);
     sendError(ws, '無效的玩家名稱');
     return;
   }
   
-  if (players.has(playerName)) {
-    sendError(ws, '玩家名稱已被使用');
+  if (!playerId) {
+    console.log(`❌ Missing player ID: ${playerId}`);
+    sendError(ws, '無效的玩家ID');
     return;
   }
   
-  const player = {
-    ws: ws,
-    id: playerName,
-    x: 50,
-    y: 50,
-    joinTime: Date.now(),
-    lastActive: Date.now()
-  };
+  if (!roomId) {
+    console.log(`❌ Invalid room ID: ${roomId}`);
+    sendError(ws, '無效的房間號');
+    return;
+  }
   
-  ws.playerId = playerName;
-  players.set(playerName, player);
-  
-  console.log(`${playerName === 'quiz_master' ? '🎮 Quiz Master' : '👤 Player'} ${playerName} joined. Total players: ${players.size}`);
-  
-  // Send join confirmation to the new player
-  ws.send(JSON.stringify({
-    type: 'newPlayer',
-    id: playerName,
-    name: playerName,
-    x: player.x,
-    y: player.y
-  }));
-  
-  // Send existing players to new player
-  const existingPlayers = Array.from(players.values())
-    .filter(p => p.id !== playerName)
-    .map(p => ({ type: 'newPlayer', id: p.id, name: p.id, x: p.x, y: p.y }));
-  
-  existingPlayers.forEach(playerData => {
-    ws.send(JSON.stringify(playerData));
-  });
-  
-  // Broadcast new player to existing players
-  broadcast({
-    type: 'newPlayer',
-    id: playerName,
-    name: playerName,
-    x: player.x,
-    y: player.y
-  }, playerName);
+  try {
+    // 如果房間不存在，嘗試重新載入持久化數據
+    if (!roomManager.getRoom(roomId)) {
+      console.log(`⚠️ Room ${roomId} not found in memory, attempting to reload from storage...`);
+      roomManager.reloadPersistedData();
+    }
+    
+    const player = roomManager.joinRoom(roomId, playerName, ws, playerId);
+    
+    ws.playerId = playerId;
+    ws.playerName = playerName;
+    ws.roomId = roomId;
+    
+    ws.send(JSON.stringify({
+      type: 'joinedRoom',
+      roomId: roomId,
+      playerId: playerId,
+      playerName: playerName,
+      isQuizMaster: player.isQuizMaster,
+      x: player.x,
+      y: player.y
+    }));
+    
+    const room = roomManager.getRoom(roomId);
+    if (room) {
+      room.players.forEach((existingPlayer, existingPlayerId) => {
+        if (existingPlayerId !== playerId) {
+          ws.send(JSON.stringify({
+            type: 'newPlayer',
+            id: existingPlayer.name || existingPlayerId,
+            playerId: existingPlayerId,
+            name: existingPlayer.name || existingPlayerId,
+            x: existingPlayer.x,
+            y: existingPlayer.y,
+            isQuizMaster: existingPlayer.isQuizMaster
+          }));
+        }
+      });
+    }
+    
+    roomManager.broadcastToRoom(roomId, {
+      type: 'newPlayer',
+      id: playerName,
+      playerId: playerId,
+      name: playerName,
+      x: player.x,
+      y: player.y,
+      isQuizMaster: player.isQuizMaster
+    }, playerId);
+    
+    console.log(`👤 Player ${playerName} joined room ${roomId}`);
+  } catch (error) {
+    sendError(ws, error instanceof Error ? error.message : 'Unknown error');
+  }
 }
 
 function handlePlayerMove(ws, data) {
   const playerId = ws.playerId;
-  if (!playerId || !players.has(playerId)) {
+  const roomId = ws.roomId;
+  
+  if (!playerId || !roomId) {
     sendError(ws, '未授權的移動');
     return;
   }
   
-  const player = players.get(playerId);
-  const x = Math.max(0, Math.min(100, parseFloat(data.x) || 0));
-  const y = Math.max(0, Math.min(100, parseFloat(data.y) || 0));
+  const room = roomManager.getRoom(roomId);
+  if (!room || !room.players.has(playerId)) {
+    sendError(ws, '玩家不在房間中');
+    return;
+  }
+  
+  const player = room.players.get(playerId);
+  const x = Math.max(0, Math.min(100, parseFloat(String(data.x)) || 0));
+  const y = Math.max(0, Math.min(100, parseFloat(String(data.y)) || 0));
   
   player.x = x;
   player.y = y;
   player.lastActive = Date.now();
   
-  broadcast({
+  roomManager.broadcastToRoom(roomId, {
     type: 'positionUpdate',
-    id: playerId,
+    id: player.name || playerId,
+    playerId: playerId,
     x: x,
     y: y
   }, playerId);
 }
 
 function handleScoreUpdate(ws, data) {
-  const playerId = sanitizeInput(data.id);
-  const score = parseInt(data.score) || 0;
+  const playerName = sanitizeInput(data.id);
+  const playerId = sanitizeInput(data.playerId) || ws.playerId;
+  const roomId = ws.roomId;
+  const score = parseInt(String(data.score)) || 0;
   
-  if (!playerId || score < 0) {
+  if (!playerId || !roomId || score < 0) {
     console.warn('Invalid score update:', data);
     return;
   }
   
-  const newTotal = (gameState.scores.get(playerId) || 0) + score;
-  console.log(`🎯 Score update from ${ws.playerId}: ${playerId} += ${score} (new total: ${newTotal})`);
-  
-  if (gameState.scores.has(playerId)) {
-    gameState.scores.set(playerId, gameState.scores.get(playerId) + score);
-  } else {
-    gameState.scores.set(playerId, score);
+  try {
+    const scoreResult = roomManager.updateScore(playerId, score);
+    if (scoreResult) {
+      roomManager.broadcastToRoom(roomId, {
+        type: 'scoreUpdate',
+        id: playerName,
+        playerId: playerId,
+        score: score,
+        totalScore: scoreResult.totalScore
+      });
+      
+      const leaderboard = roomManager.getLeaderboard(roomId);
+      roomManager.broadcastToRoom(roomId, {
+        type: 'leaderboardUpdate',
+        leaderboard: leaderboard
+      });
+    }
+  } catch (error) {
+    console.error('Error updating score:', error);
   }
-  
-  // 廣播分數更新到所有連接的客戶端（包括quiz_master）
-  broadcast({
-    type: 'scoreUpdate',
-    id: playerId,
-    score: score,
-    totalScore: gameState.scores.get(playerId)
-  }); // 不排除任何玩家，讓quiz_master也能收到分數更新
 }
 
 function handleAnswerBroadcast(ws, data) {
-  console.log(`📢 Answer broadcast attempt from: ${ws.playerId || 'undefined'}`);
-  if (ws.playerId !== 'quiz_master') {
-    console.warn(`❌ Non-quiz master attempted to broadcast answer. playerId: ${ws.playerId}`);
+  const playerId = ws.playerId;
+  const roomId = ws.roomId;
+  
+  console.log(`📢 Answer broadcast attempt from: ${playerId || 'undefined'} in room ${roomId}`);
+  
+  if (!roomId) {
+    sendError(ws, 'Quiz Master必須在房間中');
     return;
   }
   
-  gameState.currentQuestion = {
-    correctAnswer: data.correctAnswer,
-    score: parseInt(data.score) || 0,
+  const room = roomManager.getRoom(roomId);
+  if (!room) {
+    sendError(ws, '房間不存在');
+    return;
+  }
+  
+  if (playerId !== room.quizMasterPlayerId) {
+    console.warn(`❌ Non-quiz master attempted to broadcast answer. playerId: ${playerId}, expected: ${room.quizMasterPlayerId}`);
+    sendError(ws, '只有Quiz Master可以廣播答案');
+    return;
+  }
+  
+  room.gameState.currentQuestion = {
+    correctAnswer: data.correctAnswer || '',
+    score: parseInt(String(data.score)) || 0,
     timestamp: Date.now()
   };
   
-  console.log('Broadcasting answer from quiz master:', data);
-  broadcast({
+  console.log(`Broadcasting answer from quiz master in room ${roomId}:`, data);
+  roomManager.broadcastToRoom(roomId, {
     type: 'answer',
     correctAnswer: data.correctAnswer,
     score: data.score
@@ -253,40 +324,73 @@ function handleAnswerBroadcast(ws, data) {
 }
 
 function handleExistingPlayersRequest(ws) {
-  const playerNames = Array.from(players.keys()).filter(name => name !== 'quiz_master');
-  console.log(`Sending existing players list to quiz master: ${playerNames.join(', ')}`);
+  const roomId = ws.roomId;
   
-  // 為每個現有玩家發送newPlayer消息
+  if (!roomId) {
+    sendError(ws, '必須在房間中才能請求玩家列表');
+    return;
+  }
+  
+  const room = roomManager.getRoom(roomId);
+  if (!room) {
+    sendError(ws, '房間不存在');
+    return;
+  }
+  
+  const playerNames = Array.from(room.players.keys()).filter(name => name !== room.quizMaster);
+  console.log(`Sending existing players list to quiz master in room ${roomId}: ${playerNames.join(', ')}`);
+  
   playerNames.forEach(playerName => {
-    const player = players.get(playerName);
+    const player = room.players.get(playerName);
     if (player) {
       ws.send(JSON.stringify({
         type: 'newPlayer',
         id: playerName,
         name: playerName,
         x: player.x,
-        y: player.y
+        y: player.y,
+        isQuizMaster: player.isQuizMaster
       }));
     }
   });
   
-  // 也發送傳統的existingPlayers消息以保持兼容性
   ws.send(JSON.stringify({
-    type: 'existingPlayers',
-    names: playerNames,
-    count: playerNames.length
+    type: 'roomStats',
+    roomId: roomId,
+    playerCount: room.players.size,
+    players: playerNames
+  }));
+}
+
+function handleLeaderboardRequest(ws, data) {
+  const roomId = ws.roomId;
+  
+  if (!roomId) {
+    sendError(ws, '必須在房間中才能請求排行榜');
+    return;
+  }
+  
+  const leaderboard = roomManager.getLeaderboard(roomId);
+  ws.send(JSON.stringify({
+    type: 'leaderboard',
+    roomId: roomId,
+    leaderboard: leaderboard
   }));
 }
 
 function handlePlayerDisconnect(ws, code, reason) {
   const playerId = ws.playerId;
-  if (playerId && players.has(playerId)) {
-    players.delete(playerId);
-    console.log(`Player ${playerId} disconnected (${code}). Total players: ${players.size}`);
-    
-    if (playerId !== 'quiz_master') {
-      broadcast({ type: 'playerLeft', id: playerId });
+  const roomId = ws.roomId;
+  
+  if (playerId) {
+    const player = roomManager.leaveRoom(playerId);
+    if (player && roomId) {
+      roomManager.broadcastToRoom(roomId, {
+        type: 'playerLeft',
+        id: playerId
+      });
     }
+    console.log(`Player ${playerId} disconnected from room ${roomId} (${code})`);
   }
 }
 
@@ -303,34 +407,24 @@ function sendError(ws, message) {
 
 // Health check and cleanup
 const healthCheckInterval = setInterval(() => {
-  const now = Date.now();
-  const inactivePlayers = [];
-  
-  players.forEach((player, playerId) => {
-    if (now - player.lastActive > 300000) { // 5 minutes
-      inactivePlayers.push(playerId);
+  roomManager.getAllRoomsStats().forEach(roomStats => {
+    const room = roomManager.getRoom(roomStats.id);
+    if (room) {
+      room.players.forEach((player) => {
+        const playerWs = player.ws;
+        if (playerWs) {
+          if (!playerWs.isAlive) {
+            console.log(`Terminating inactive connection for player ${player.id}`);
+            playerWs.terminate();
+            roomManager.leaveRoom(player.id);
+            return;
+          }
+          
+          playerWs.isAlive = false;
+          playerWs.ping();
+        }
+      });
     }
-  });
-  
-  inactivePlayers.forEach(playerId => {
-    console.log(`Removing inactive player: ${playerId}`);
-    const player = players.get(playerId);
-    if (player) {
-      player.ws.close(1000, 'Inactive timeout');
-      players.delete(playerId);
-    }
-  });
-  
-  // Ping all connections
-  players.forEach((player) => {
-    if (!player.ws.isAlive) {
-      player.ws.terminate();
-      players.delete(player.id);
-      return;
-    }
-    
-    player.ws.isAlive = false;
-    player.ws.ping();
   });
 }, 30000); // Every 30 seconds
 
@@ -339,8 +433,16 @@ process.on('SIGTERM', () => {
   console.log('Received SIGTERM, shutting down gracefully');
   clearInterval(healthCheckInterval);
   
-  players.forEach((player) => {
-    player.ws.close(1000, 'Server shutting down');
+  roomManager.getAllRoomsStats().forEach(roomStats => {
+    const room = roomManager.getRoom(roomStats.id);
+    if (room) {
+      room.players.forEach((player) => {
+        if (player.ws) {
+          player.ws.close(1000, 'Server shutting down');
+        }
+      });
+      roomManager.closeRoom(roomStats.id);
+    }
   });
   
   wss.close(() => {

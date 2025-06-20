@@ -48,7 +48,7 @@
         <span class="connection-status" :class="{ 'connected': isConnected }">{{ isConnected ? '🟢 已連線' : '🔴 未連線' }}</span>
       </div>
       <div class="game-stats">
-        <span class="online-count">🧑‍🤝‍🧑 線上: {{ players.length }}</span>
+        <span class="online-count">🧑‍🤝‍🧑 線上: {{ activePlayers.length }}</span>
       </div>
     </div>
     
@@ -73,15 +73,25 @@
     
     <div class="players-container">
       <div 
-        v-for="player in players" 
+        v-for="(player, index) in sortedActivePlayers" 
         :key="player.id" 
-        :style="playerStyle(player)"
+        :style="playerStyle(player, index)"
         class="player-avatar"
-        :class="{ 'current-player': player.id === playerName || player.name === playerName }"
+        :class="{ 
+          'current-player': player.id === playerName || player.name === playerName,
+          'top-player': getPlayerRank(player)?.rank <= 3 && !player.isQuizMaster,
+          'first-place': getPlayerRank(player)?.rank === 1,
+          'second-place': getPlayerRank(player)?.rank === 2,
+          'third-place': getPlayerRank(player)?.rank === 3
+        }"
       >
         <div class="player-bubble">
+          <div class="player-rank" v-if="getPlayerRank(player)?.medal">
+            {{ getPlayerRank(player).medal }}
+          </div>
           <span class="player-emoji">👤</span>
           <span class="player-text">{{ player.id }}</span>
+          <span class="player-score" v-if="!player.isQuizMaster">{{ player.score }}分</span>
         </div>
       </div>
     </div>
@@ -98,7 +108,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useNuxtApp } from '#app';
 
@@ -116,12 +126,61 @@ const joinError = ref('');
 
 // 遊戲狀態
 const players = ref([]);
+const playerScores = ref({}); // 玩家分數記錄
 const position = ref({ x: 50, y: 50 });
 const isConnected = ref(false);
 const currentChoice = ref(null);
 const showFeedback = ref(false);
 const feedbackType = ref('');
 const feedbackMessage = ref('');
+
+// 活躍玩家過濾 (20秒內有活動)
+const PLAYER_TIMEOUT = 20 * 1000; // 20秒
+const activePlayers = computed(() => {
+  const now = Date.now();
+  return players.value.filter(player => {
+    // Quiz master 總是顯示
+    if (player.isQuizMaster) return true;
+    
+    // 檢查玩家最後活動時間
+    const lastActive = player.lastActive || player.joinTime || now;
+    return (now - lastActive) <= PLAYER_TIMEOUT;
+  });
+});
+
+// 排序玩家：按分數排序，前三名有特殊顯示
+const sortedActivePlayers = computed(() => {
+  const activeList = activePlayers.value;
+  
+  // 添加分數資訊並排序
+  const playersWithScores = activeList.map(player => ({
+    ...player,
+    score: playerScores.value[player.playerId] || playerScores.value[player.id] || 0
+  }));
+  
+  // 排序：Quiz Master 總是在最後，其他按分數降序
+  return playersWithScores.sort((a, b) => {
+    if (a.isQuizMaster && !b.isQuizMaster) return 1;
+    if (!a.isQuizMaster && b.isQuizMaster) return -1;
+    if (a.isQuizMaster && b.isQuizMaster) return 0;
+    
+    // 普通玩家按分數排序
+    return b.score - a.score;
+  });
+});
+
+// 獲取玩家排名和獎牌
+const getPlayerRank = (player) => {
+  if (player.isQuizMaster) return null;
+  
+  const nonQuizMasterPlayers = sortedActivePlayers.value.filter(p => !p.isQuizMaster);
+  const rank = nonQuizMasterPlayers.findIndex(p => p.playerId === player.playerId || p.id === player.id) + 1;
+  
+  if (rank === 1) return { rank, medal: '🥇', color: '#FFD700' }; // 金牌
+  if (rank === 2) return { rank, medal: '🥈', color: '#C0C0C0' }; // 銀牌
+  if (rank === 3) return { rank, medal: '🥉', color: '#CD7F32' }; // 銅牌
+  return { rank, medal: null, color: null };
+};
 
 // LocalStorage keys for game
 const GAME_STORAGE_KEYS = {
@@ -373,6 +432,7 @@ const initializeGame = async () => {
         if (player) {
           player.x = data.x;
           player.y = data.y;
+          player.lastActive = Date.now(); // 更新最後活動時間
         }
         
       } else if (data.type === 'playerLeft') {
@@ -401,11 +461,23 @@ const initializeGame = async () => {
           console.log('📊 Sent score update to server:', scoreMessage);
         }
         
+      } else if (data.type === 'scoreUpdate') {
+        // 處理分數更新廣播
+        if (data.id || data.playerId) {
+          const playerKey = data.playerId || data.id;
+          playerScores.value = {
+            ...playerScores.value,
+            [playerKey]: data.totalScore !== undefined ? data.totalScore : (playerScores.value[playerKey] || 0) + (data.score || 0)
+          };
+          console.log(`📊 Score updated: ${data.id} = ${playerScores.value[playerKey]} points`);
+        }
+        
       } else if (data.type === 'roomClosed') {
         // 房間關閉
         alert('房間已關閉，請重新加入新的房間');
         joinedRoom.value = false;
         players.value = [];
+        playerScores.value = {};
       }
     };
 
@@ -476,6 +548,7 @@ function move(e) {
   if (currentPlayer) {
     currentPlayer.x = newX;
     currentPlayer.y = newY;
+    currentPlayer.lastActive = Date.now(); // 更新最後活動時間
     console.log(`Updated current player position:`, currentPlayer);
   } else {
     console.warn(`Current player not found in players array. PlayerName: ${playerName.value}, PlayerId: ${playerId.value}`);
@@ -507,13 +580,35 @@ function showAnswerFeedback(isCorrect, score) {
   }, 3000);
 }
 
-const playerStyle = (player) => ({
-  position: 'absolute',
-  left: `${player.x}%`,
-  top: `${player.y}%`,
-  transform: 'translate(-50%, -50%)',
-  zIndex: (player.id === playerName.value || player.name === playerName.value) ? 10 : 5
-});
+const playerStyle = (player, index) => {
+  const rankInfo = getPlayerRank(player);
+  let zIndex = 5;
+  
+  // 當前玩家最高層級
+  if (player.id === playerName.value || player.name === playerName.value) {
+    zIndex = 100;
+  } 
+  // Quiz Master 中等層級
+  else if (player.isQuizMaster) {
+    zIndex = 50;
+  }
+  // 前三名玩家較高層級，排名越高層級越高
+  else if (rankInfo?.rank <= 3) {
+    zIndex = 30 - rankInfo.rank; // 第1名=29, 第2名=28, 第3名=27
+  }
+  // 其他玩家按排序順序分層，分數越高層級越高
+  else {
+    zIndex = Math.max(5, 25 - index);
+  }
+  
+  return {
+    position: 'absolute',
+    left: `${player.x}%`,
+    top: `${player.y}%`,
+    transform: 'translate(-50%, -50%)',
+    zIndex
+  };
+};
 </script>
 
 <style scoped>
@@ -798,6 +893,46 @@ const playerStyle = (player) => ({
   background: linear-gradient(135deg, #ffd700, #ffed4e);
   border-color: #f39c12;
   transform: scale(1.1);
+}
+
+/* 前三名特殊樣式 */
+.top-player .player-bubble {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.first-place .player-bubble {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  border: 3px solid #FFD700;
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+}
+
+.second-place .player-bubble {
+  background: linear-gradient(135deg, #C0C0C0, #A9A9A9);
+  border: 3px solid #C0C0C0;
+  box-shadow: 0 6px 20px rgba(192, 192, 192, 0.4);
+}
+
+.third-place .player-bubble {
+  background: linear-gradient(135deg, #CD7F32, #B8860B);
+  border: 3px solid #CD7F32;
+  box-shadow: 0 6px 20px rgba(205, 127, 50, 0.4);
+}
+
+.player-rank {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.player-score {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #333;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.15rem 0.4rem;
+  border-radius: 8px;
+  margin-top: 0.25rem;
 }
 
 .player-emoji {

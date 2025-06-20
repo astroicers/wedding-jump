@@ -1,28 +1,18 @@
 {
-  "1000": {
-    "players": {},
-    "lastUpdated": 1750447578486
-  },
-  "1001": {
-    "players": {},
-    "lastUpdated": 1750447578486
-  },
   "1002": {
     "players": {},
-    "lastUpdated": 1750447578487
+    "lastUpdated": 1750449185656
+  },
+  "1003": {
+    "players": {},
+    "lastUpdated": 1750449185688
   },
   "1004": {
-    "players": {
-      "quiz_master_1750447715194_gsl7tqr5c": {
-        "id": "quiz_master_1750447715194_gsl7tqr5c",
-        "name": "SS",
-        "x": 50,
-        "y": 50,
-        "joinTime": 1750447715287,
-        "lastActive": 1750447715287,
-        "isQuizMaster": true
-      }
-    },
-    "lastUpdated": 1750447715288
+    "players": {},
+    "lastUpdated": 1750449185688
+  },
+  "1005": {
+    "players": {},
+    "lastUpdated": 1750449185689
   }
 }

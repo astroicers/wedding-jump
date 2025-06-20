@@ -1,18 +1,20 @@
 {
-  "1000": {
-    "scores": {},
-    "lastUpdated": 1750447578486
-  },
-  "1001": {
-    "scores": {},
-    "lastUpdated": 1750447578486
-  },
   "1002": {
+    "scores": {
+      "player_1750446886275_24ta6ej33": 0
+    },
+    "lastUpdated": 1750449185655
+  },
+  "1003": {
     "scores": {},
-    "lastUpdated": 1750447578487
+    "lastUpdated": 1750449185688
   },
   "1004": {
     "scores": {},
-    "lastUpdated": 1750447715288
+    "lastUpdated": 1750449185688
+  },
+  "1005": {
+    "scores": {},
+    "lastUpdated": 1750449185689
   }
 }

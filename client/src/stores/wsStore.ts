@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { WS_URL } from '../utils/constants';
+import { logger } from '../utils/logger';
 import type { ClientMessage, ServerMessage } from '../types';
 
 export type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
@@ -51,11 +52,11 @@ export const useWsStore = create<WsState>((set, get) => ({
     const ws = new WebSocket(WS_URL);
 
     ws.onopen = () => {
-      console.log('[WS] Connected to', WS_URL);
+      logger.log('[WS] Connected to', WS_URL);
       const wasConnectedBefore = get()._hasConnectedOnce;
       set({ status: 'connected', isConnected: true, _reconnectCount: 0, _hasConnectedOnce: true });
       if (wasConnectedBefore) {
-        console.log('[WS] Reconnected — notifying handlers');
+        logger.log('[WS] Reconnected — notifying handlers');
         get()._reconnectHandlers.forEach((handler) => handler());
       }
     };
@@ -63,30 +64,30 @@ export const useWsStore = create<WsState>((set, get) => ({
     ws.onmessage = (event) => {
       try {
         const message = JSON.parse(event.data) as ServerMessage;
-        console.log('[WS] Received:', message.type);
+        logger.log('[WS] Received:', message.type);
         set({ lastMessage: message });
         // Notify all subscribers
         get()._handlers.forEach((handler) => handler(message));
       } catch (error) {
-        console.error('[WS] Failed to parse message:', error);
+        logger.error('[WS] Failed to parse message:', error);
       }
     };
 
     ws.onclose = (event) => {
-      console.log('[WS] Disconnected:', event.code, event.reason);
+      logger.log('[WS] Disconnected:', event.code, event.reason);
       set({ status: 'disconnected', isConnected: false, _ws: null });
 
       const { _reconnectCount } = get();
       if (_reconnectCount < MAX_RECONNECT_ATTEMPTS) {
         set({ _reconnectCount: _reconnectCount + 1 });
-        console.log(`[WS] Reconnecting... (${_reconnectCount + 1}/${MAX_RECONNECT_ATTEMPTS})`);
+        logger.log(`[WS] Reconnecting... (${_reconnectCount + 1}/${MAX_RECONNECT_ATTEMPTS})`);
         const timer = setTimeout(() => get().connect(), RECONNECT_INTERVAL);
         set({ _reconnectTimer: timer });
       }
     };
 
     ws.onerror = (error) => {
-      console.error('[WS] Error:', error);
+      logger.error('[WS] Error:', error);
       set({ status: 'error', isConnected: false });
     };
 
@@ -111,11 +112,11 @@ export const useWsStore = create<WsState>((set, get) => ({
   send: (message) => {
     const { _ws } = get();
     if (_ws?.readyState === WebSocket.OPEN) {
-      console.log('[WS] Sending:', message.type);
+      logger.log('[WS] Sending:', message.type);
       _ws.send(JSON.stringify(message));
       return true;
     }
-    console.warn('[WS] Cannot send - not connected');
+    logger.warn('[WS] Cannot send - not connected');
     return false;
   },
 

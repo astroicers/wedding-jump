@@ -47,5 +47,9 @@ RUN mkdir -p ./server/data
 # 3002 - REST API server
 EXPOSE 3000 3001 3002
 
+# Health check via API server
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget -qO- http://localhost:3002/health || exit 1
+
 # Start with PM2
 CMD ["pm2-runtime", "start", "ecosystem.config.cjs"]

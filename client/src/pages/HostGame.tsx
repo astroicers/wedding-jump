@@ -5,6 +5,7 @@ import { QuestionCard, AnswerGrid, GameControls, LeaderboardPopup, PlayerCounter
 import { useWs, useTimer, useSessionRecovery } from '../hooks';
 import { usePlayerStore, useRoomStore, useGameStore, useWsStore } from '../stores';
 import { clearGameSession } from '../utils/session';
+import { logger } from '../utils/logger';
 import { useTranslation } from '../i18n';
 import type { ServerMessage, Question, QuestionMessage } from '../types';
 
@@ -109,7 +110,7 @@ export const HostGame: FC = () => {
 
   const handleReconnect = useCallback(() => {
     if (roomId && currentPlayer) {
-      console.log('[HostGame] Reconnecting — re-joining room', roomId);
+      logger.log('[HostGame] Reconnecting — re-joining room', roomId);
       const { send: wsSend } = useWsStore.getState();
       wsSend({
         type: 'joinRoom',
@@ -203,18 +204,17 @@ export const HostGame: FC = () => {
   const progress = getProgress();
   const playersArray = Array.from(players.values());
 
-  // 模擬題目（實際應從 WebSocket 接收）
-  const mockQuestion: Question = currentQuestion || {
-    type: 'abcd',
-    題目: 'What year did the couple first meet?',
-    選項A: '2018',
-    選項B: '2019',
-    選項C: '2020',
-    選項D: '2021',
-    倒數時間: 30,
-    正確答案: 'B',
-    分數: 100,
-  };
+  // 題目未載入時顯示 loading
+  if (!currentQuestion) {
+    return (
+      <div className="min-h-screen bg-bg-dark flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-white/60">{t('common.waitingForQuestion')}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-bg-dark flex flex-col">
@@ -261,7 +261,7 @@ export const HostGame: FC = () => {
         {/* 左側：題目卡片 */}
         <div className="lg:col-span-2 flex flex-col gap-4">
           <QuestionCard
-            question={mockQuestion}
+            question={currentQuestion}
             questionNumber={progress.current}
             totalQuestions={progress.total}
             showAnswer={phase === 'reveal'}
@@ -285,7 +285,7 @@ export const HostGame: FC = () => {
         {/* 右側：遊戲畫面 */}
         <div className="lg:col-span-3">
           <AnswerGrid
-            question={mockQuestion}
+            question={currentQuestion}
             players={playersArray}
             showAnswer={phase === 'reveal'}
             className="h-full"

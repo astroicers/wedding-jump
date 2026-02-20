@@ -17,6 +17,10 @@ export const en: Translations = {
   'common.mvp': 'MVP',
   'common.correct': 'CORRECT',
   'common.you': 'YOU',
+  'common.errorTitle': 'Something went wrong',
+  'common.errorMessage': 'An unexpected error occurred. Please try again.',
+  'common.retry': 'Retry',
+  'common.waitingForQuestion': 'Waiting for question...',
 
   // Home
   'home.subtitle': 'Real-time Multiplayer Wedding Quiz Game',

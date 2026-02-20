@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useRoomStore, usePlayerStore, useGameStore, useWsStore } from '../stores';
 import { clearGameSession } from '../utils/session';
+import { logger } from '../utils/logger';
 import type { ServerMessage, GameStateMessage, Question } from '../types';
 
 interface UseSessionRecoveryOptions {
@@ -56,7 +57,7 @@ export function useSessionRecovery(options: UseSessionRecoveryOptions) {
 
     hasAttemptedRecovery.current = true;
 
-    console.log('[SessionRecovery] Attempting to rejoin room', roomId, 'as', currentPlayer.playerId);
+    logger.log('[SessionRecovery] Attempting to rejoin room', roomId, 'as', currentPlayer.playerId);
 
     let waitingForGameState = false;
 
@@ -65,7 +66,7 @@ export function useSessionRecovery(options: UseSessionRecoveryOptions) {
       switch (message.type) {
         case 'joinedRoom':
           // Successfully re-joined — now request full game state
-          console.log('[SessionRecovery] Re-joined room, requesting game state');
+          logger.log('[SessionRecovery] Re-joined room, requesting game state');
           waitingForGameState = true;
           send({ type: 'requestGameState' });
           break;
@@ -107,20 +108,20 @@ export function useSessionRecovery(options: UseSessionRecoveryOptions) {
 
           if (timeoutRef.current) clearTimeout(timeoutRef.current);
           unsubscribe();
-          console.log('[SessionRecovery] Recovery complete');
+          logger.log('[SessionRecovery] Recovery complete');
           onRecoveryComplete();
           break;
         }
 
         case 'error':
-          console.log('[SessionRecovery] Error during rejoin:', (message as { message?: string }).message);
+          logger.log('[SessionRecovery] Error during rejoin:', (message as { message?: string }).message);
           if (timeoutRef.current) clearTimeout(timeoutRef.current);
           unsubscribe();
           handleFail();
           break;
 
         case 'roomClosed':
-          console.log('[SessionRecovery] Room was closed');
+          logger.log('[SessionRecovery] Room was closed');
           if (timeoutRef.current) clearTimeout(timeoutRef.current);
           unsubscribe();
           handleFail();
@@ -139,7 +140,7 @@ export function useSessionRecovery(options: UseSessionRecoveryOptions) {
 
     // Timeout: if no response within 5 seconds, recovery failed
     timeoutRef.current = setTimeout(() => {
-      console.log('[SessionRecovery] Timeout waiting for rejoin response');
+      logger.log('[SessionRecovery] Timeout waiting for rejoin response');
       unsubscribe();
       handleFail();
     }, 5000);

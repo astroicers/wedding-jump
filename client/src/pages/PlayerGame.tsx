@@ -5,6 +5,7 @@ import { GameArena } from '../components/player';
 import { useWs, useTimer, useSessionRecovery } from '../hooks';
 import { usePlayerStore, useRoomStore, useGameStore, useWsStore } from '../stores';
 import { clearGameSession } from '../utils/session';
+import { logger } from '../utils/logger';
 import { useTranslation } from '../i18n';
 import type { ServerMessage, AnswerZone, Player, QuestionMessage } from '../types';
 
@@ -126,7 +127,7 @@ export const PlayerGame: FC = () => {
 
   const handleReconnect = useCallback(() => {
     if (roomId && currentPlayer) {
-      console.log('[PlayerGame] Reconnecting — re-joining room', roomId);
+      logger.log('[PlayerGame] Reconnecting — re-joining room', roomId);
       const { send: wsSend } = useWsStore.getState();
       wsSend({
         type: 'joinRoom',
@@ -215,18 +216,17 @@ export const PlayerGame: FC = () => {
     playersArray.push(currentPlayer);
   }
 
-  // 模擬題目（實際應從 WebSocket 接收）
-  const mockQuestion = currentQuestion || {
-    type: 'abcd' as const,
-    題目: 'What is the bride\'s favorite food?',
-    選項A: 'Pizza',
-    選項B: 'Sushi',
-    選項C: 'Tacos',
-    選項D: 'Pasta',
-    倒數時間: 30,
-    正確答案: 'B' as const,
-    分數: 100,
-  };
+  // 題目未載入時顯示 loading
+  if (!currentQuestion) {
+    return (
+      <div className="h-screen bg-bg-light flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-text-muted">{t('common.waitingForQuestion')}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-bg-light flex flex-col overflow-hidden">
@@ -265,7 +265,7 @@ export const PlayerGame: FC = () => {
             <span className="material-symbols-outlined text-text-muted">info</span>
           </div>
           <h1 className="text-lg font-bold text-text-primary">
-            {mockQuestion.題目}
+            {currentQuestion.題目}
           </h1>
         </div>
       </div>
@@ -273,7 +273,7 @@ export const PlayerGame: FC = () => {
       {/* 遊戲區域 */}
       <div className="flex-1 relative mt-4 px-2 pb-24 overflow-hidden">
         <GameArena
-          question={mockQuestion}
+          question={currentQuestion}
           players={playersArray}
           currentPlayer={currentPlayer}
           selectedAnswer={selectedAnswer}

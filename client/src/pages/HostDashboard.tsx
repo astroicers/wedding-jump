@@ -5,6 +5,7 @@ import { PlayerCounter } from '../components/host';
 import { useWs } from '../hooks';
 import { useRoomStore, usePlayerStore, useWsStore } from '../stores';
 import { clearGameSession } from '../utils/session';
+import { logger } from '../utils/logger';
 import { useTranslation } from '../i18n';
 import type { ServerMessage } from '../types';
 
@@ -72,7 +73,7 @@ export const HostDashboard: FC = () => {
         break;
 
       case 'error':
-        console.error('Error:', message.message);
+        logger.error('Error:', message.message);
         setErrorMessage(message.message);
         setIsCreating(false);
         setTimeout(() => setErrorMessage(null), 5000);
@@ -125,7 +126,7 @@ export const HostDashboard: FC = () => {
     if (!roomId || !isJoined || !currentPlayer?.playerId) return;
 
     hasAttemptedRecovery.current = true;
-    console.log('[HostDashboard] Recovering session — rejoining room', roomId);
+    logger.log('[HostDashboard] Recovering session — rejoining room', roomId);
 
     const { send: wsSend } = useWsStore.getState();
     wsSend({

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { WS_URL } from '../utils/constants';
+import { logger } from '../utils/logger';
 import type { ClientMessage, ServerMessage } from '../types';
 
 export type WebSocketStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
@@ -52,7 +53,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     const ws = new WebSocket(WS_URL);
 
     ws.onopen = () => {
-      console.log('[WS] Connected to', WS_URL);
+      logger.log('[WS] Connected to', WS_URL);
       setStatus('connected');
       reconnectCountRef.current = 0;
       onConnectRef.current?.();
@@ -61,29 +62,29 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     ws.onmessage = (event) => {
       try {
         const message = JSON.parse(event.data) as ServerMessage;
-        console.log('[WS] Received:', message.type);
+        logger.log('[WS] Received:', message.type);
         setLastMessage(message);
         onMessageRef.current?.(message);
       } catch (error) {
-        console.error('[WS] Failed to parse message:', error);
+        logger.error('[WS] Failed to parse message:', error);
       }
     };
 
     ws.onclose = (event) => {
-      console.log('[WS] Disconnected:', event.code, event.reason);
+      logger.log('[WS] Disconnected:', event.code, event.reason);
       setStatus('disconnected');
       onDisconnectRef.current?.();
 
       // 嘗試重新連線
       if (reconnectCountRef.current < reconnectAttempts) {
         reconnectCountRef.current += 1;
-        console.log(`[WS] Reconnecting... (${reconnectCountRef.current}/${reconnectAttempts})`);
+        logger.log(`[WS] Reconnecting... (${reconnectCountRef.current}/${reconnectAttempts})`);
         reconnectTimeoutRef.current = setTimeout(connect, reconnectInterval);
       }
     };
 
     ws.onerror = (error) => {
-      console.error('[WS] Error:', error);
+      logger.error('[WS] Error:', error);
       setStatus('error');
       onErrorRef.current?.(error);
     };
@@ -104,11 +105,11 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
 
   const send = useCallback((message: ClientMessage) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      console.log('[WS] Sending:', message.type);
+      logger.log('[WS] Sending:', message.type);
       wsRef.current.send(JSON.stringify(message));
       return true;
     }
-    console.warn('[WS] Cannot send - not connected');
+    logger.warn('[WS] Cannot send - not connected');
     return false;
   }, []);
 

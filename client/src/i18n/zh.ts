@@ -17,6 +17,10 @@ export const zh: Translations = {
   'common.mvp': 'MVP',
   'common.correct': '正確',
   'common.you': '你',
+  'common.errorTitle': '發生錯誤',
+  'common.errorMessage': '發生了意外錯誤，請重試。',
+  'common.retry': '重試',
+  'common.waitingForQuestion': '等待題目中...',
 
   // 首頁
   'home.subtitle': '即時多人婚禮問答遊戲',

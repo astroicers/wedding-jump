@@ -17,6 +17,10 @@ export interface Translations {
   'common.mvp': string;
   'common.correct': string;
   'common.you': string;
+  'common.errorTitle': string;
+  'common.errorMessage': string;
+  'common.retry': string;
+  'common.waitingForQuestion': string;
 
   // Home
   'home.subtitle': string;

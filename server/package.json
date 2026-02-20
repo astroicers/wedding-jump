@@ -1,0 +1,26 @@
+{
+  "name": "wedding-jump-server",
+  "version": "2.0.0",
+  "description": "Wedding Jump API and WebSocket Server",
+  "type": "module",
+  "main": "src/api.js",
+  "scripts": {
+    "start": "node src/api.js & node src/ws-server.js",
+    "start:api": "node src/api.js",
+    "start:ws": "node src/ws-server.js",
+    "dev": "concurrently \"node src/api.js\" \"node src/ws-server.js\"",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "csv-parser": "^3.0.0",
+    "express": "^4.19.2",
+    "ws": "^8.17.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "supertest": "^7.2.2",
+    "vitest": "^4.0.18"
+  }
+}

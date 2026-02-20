@@ -1,0 +1,26 @@
+services:
+  wedding-jump:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        VITE_WS_URL: ws://localhost:8001
+        VITE_API_URL: http://localhost:8002
+    container_name: wedding-jump-app
+    restart: unless-stopped
+    ports:
+      - "8000:3000"   # Frontend (static serve)
+      - "8001:3001"   # WebSocket server
+      - "8002:3002"   # REST API server
+    environment:
+      - NODE_ENV=production
+      - WS_PORT=3001
+      - API_PORT=3002
+    volumes:
+      - ../server/data/questions.csv:/app/server/data/questions.csv:ro
+    networks:
+      - wedding-jump-network
+
+networks:
+  wedding-jump-network:
+    driver: bridge

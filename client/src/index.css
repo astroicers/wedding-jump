@@ -1,0 +1,105 @@
+/* Google Fonts - must be at the top */
+@import url('https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@import "tailwindcss";
+
+/* Custom Theme */
+@theme {
+  /* Colors */
+  --color-primary: #f48c25;
+  --color-accent-pink: #ff4d94;
+  --color-bg-light: #f8f7f5;
+  --color-bg-dark: #221910;
+  --color-game-red: #ff4d4d;
+  --color-game-blue: #4d79ff;
+  --color-game-yellow: #ffcc00;
+  --color-game-green: #2ecc71;
+  --color-text-primary: #1c140d;
+  --color-text-secondary: #5e442e;
+  --color-text-muted: #9c7349;
+
+  /* Font Family */
+  --font-display: 'Spline Sans', sans-serif;
+
+  /* Border Radius */
+  --radius-default: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+}
+
+/* Base Styles */
+:root {
+  font-family: 'Spline Sans', sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Material Symbols Helper */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.material-symbols-outlined.filled {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Glass Effect */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  background: rgba(34, 25, 16, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(244, 140, 37, 0.2);
+}
+
+/* Glow Effects */
+.glow-primary {
+  box-shadow: 0 0 40px rgba(244, 140, 37, 0.4);
+}
+
+/* Animation Helpers */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Hide Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Background Mesh */
+.bg-mesh {
+  background-color: var(--color-bg-dark);
+  background-image:
+    radial-gradient(at 0% 0%, rgba(244, 140, 37, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(244, 140, 37, 0.1) 0px, transparent 50%);
+}
+
+/* Countdown Ring Animation */
+.countdown-ring {
+  transition: stroke-dashoffset 0.35s;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}

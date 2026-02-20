@@ -1,0 +1,1326 @@
+<!-- Host Desktop View 16:9 -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Host Dashboard - Wedding Trivia</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f48c25",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221910",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Spline Sans', sans-serif;
+            overflow: hidden;
+        }
+        .aspect-16-9 {
+            aspect-ratio: 16 / 9;
+        }
+        .bg-mesh {
+            background-color: #221910;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(244, 140, 37, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(244, 140, 37, 0.1) 0px, transparent 50%);
+        }
+        .countdown-ring {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-white font-display">
+<!-- Main 16:9 Host Container -->
+<div class="relative w-full h-screen flex flex-col bg-mesh p-8 overflow-hidden">
+<!-- Header Section -->
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-4">
+<div class="bg-primary p-3 rounded-xl shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-3xl">favorite</span>
+</div>
+<div>
+<h1 class="text-3xl font-bold tracking-tight text-white">The Love Story Trivia</h1>
+<p class="text-primary font-medium">Question 5 of 15</p>
+</div>
+</div>
+<!-- Central Timer (Large for Host) -->
+<div class="relative flex items-center justify-center w-32 h-32">
+<svg class="w-full h-full">
+<circle class="text-white/10" cx="64" cy="64" fill="transparent" r="56" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary" cx="64" cy="64" fill="transparent" r="56" stroke="currentColor" stroke-dasharray="351.8" stroke-dashoffset="80" stroke-linecap="round" stroke-width="8" style="transform: rotate(-90deg); transform-origin: 50% 50%;"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-4xl font-bold">24</span>
+<span class="text-[10px] uppercase tracking-widest opacity-60">Seconds</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10">
+<span class="material-symbols-outlined text-primary text-sm">groups</span>
+<span class="font-bold">142 Players Live</span>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm opacity-60 uppercase tracking-widest">Pin Code</p>
+<p class="text-3xl font-bold tracking-tighter text-primary">WED-2024</p>
+</div>
+</div>
+</div>
+<!-- Main Content Grid -->
+<div class="flex-1 grid grid-cols-12 gap-8 min-h-0">
+<!-- Left Sidebar: Leaderboard -->
+<div class="col-span-3 flex flex-col gap-4 bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10 overflow-hidden">
+<h3 class="text-xl font-bold flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-yellow-500">trophy</span>
+                    Top 5 Leaderboard
+                </h3>
+<div class="space-y-3">
+<!-- Rank 1 -->
+<div class="flex items-center gap-3 p-3 bg-primary/20 rounded-lg border border-primary/30">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-lg">1</div>
+<div class="flex-1">
+<p class="font-bold">Sarah Jenkins</p>
+<p class="text-xs opacity-70">4,850 pts</p>
+</div>
+<span class="material-symbols-outlined text-primary">keyboard_double_arrow_up</span>
+</div>
+<!-- Rank 2-5 -->
+<div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
+<div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold">2</div>
+<div class="flex-1">
+<p class="font-bold">Uncle Robert</p>
+<p class="text-xs opacity-70">4,620 pts</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
+<div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold">3</div>
+<div class="flex-1">
+<p class="font-bold">The Best Man</p>
+<p class="text-xs opacity-70">4,410 pts</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg opacity-80">
+<div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold">4</div>
+<div class="flex-1">
+<p class="font-bold">Maid of Honor</p>
+<p class="text-xs opacity-70">4,200 pts</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg opacity-60">
+<div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold">5</div>
+<div class="flex-1">
+<p class="font-bold">Cousin Vinny</p>
+<p class="text-xs opacity-70">3,980 pts</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Center Content: Question and Answer Zones -->
+<div class="col-span-9 flex flex-col gap-8">
+<!-- Large Question Box -->
+<div class="flex-none bg-white/5 backdrop-blur-md border-l-8 border-primary rounded-xl p-10 flex items-center justify-center shadow-2xl">
+<h2 class="text-5xl font-bold text-center leading-tight">
+                        Where did the happy couple have their very first date?
+                    </h2>
+</div>
+<!-- Answer Grid -->
+<div class="flex-1 grid grid-cols-2 gap-6 pb-4">
+<!-- Red Zone -->
+<div class="relative group cursor-default">
+<div class="absolute inset-0 bg-red-500/20 rounded-xl border-2 border-red-500/50"></div>
+<div class="relative h-full flex items-center justify-between p-8">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 bg-red-500 rounded-lg flex items-center justify-center shadow-lg shadow-red-500/30">
+<span class="text-3xl font-black">A</span>
+</div>
+<span class="text-3xl font-bold">The Local Coffee Co.</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-red-500 px-6 py-4 rounded-xl shadow-xl">
+<span class="text-3xl font-bold">32</span>
+<span class="text-[10px] uppercase font-bold">Players</span>
+</div>
+</div>
+</div>
+<!-- Blue Zone -->
+<div class="relative group cursor-default">
+<div class="absolute inset-0 bg-blue-500/20 rounded-xl border-2 border-blue-500/50"></div>
+<div class="relative h-full flex items-center justify-between p-8">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 bg-blue-500 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30">
+<span class="text-3xl font-black">B</span>
+</div>
+<span class="text-3xl font-bold">University Library</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-blue-500 px-6 py-4 rounded-xl shadow-xl">
+<span class="text-3xl font-bold">18</span>
+<span class="text-[10px] uppercase font-bold">Players</span>
+</div>
+</div>
+</div>
+<!-- Yellow Zone -->
+<div class="relative group cursor-default">
+<div class="absolute inset-0 bg-yellow-500/20 rounded-xl border-2 border-yellow-500/50"></div>
+<div class="relative h-full flex items-center justify-between p-8 text-yellow-50">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 bg-yellow-500 rounded-lg flex items-center justify-center shadow-lg shadow-yellow-500/30 text-background-dark">
+<span class="text-3xl font-black">C</span>
+</div>
+<span class="text-3xl font-bold">Online Dating App</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-yellow-500 px-6 py-4 rounded-xl shadow-xl text-background-dark">
+<span class="text-3xl font-bold">65</span>
+<span class="text-[10px] uppercase font-bold">Players</span>
+</div>
+</div>
+</div>
+<!-- Green Zone -->
+<div class="relative group cursor-default">
+<div class="absolute inset-0 bg-green-500/20 rounded-xl border-2 border-green-500/50"></div>
+<div class="relative h-full flex items-center justify-between p-8">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 bg-green-500 rounded-lg flex items-center justify-center shadow-lg shadow-green-500/30">
+<span class="text-3xl font-black">D</span>
+</div>
+<span class="text-3xl font-bold">Mutual Friend's Party</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-green-500 px-6 py-4 rounded-xl shadow-xl">
+<span class="text-3xl font-bold">27</span>
+<span class="text-[10px] uppercase font-bold">Players</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Visual Decor -->
+<div class="absolute bottom-[-50px] left-0 right-0 h-40 opacity-10 pointer-events-none flex justify-around">
+<span class="material-symbols-outlined text-[120px]">favorite</span>
+<span class="material-symbols-outlined text-[120px]">celebration</span>
+<span class="material-symbols-outlined text-[120px]">diamond</span>
+<span class="material-symbols-outlined text-[120px]">cake</span>
+<span class="material-symbols-outlined text-[120px]">wine_bar</span>
+<span class="material-symbols-outlined text-[120px]">favorite</span>
+</div>
+<!-- Progress Indicator -->
+<div class="mt-4 flex items-center gap-2">
+<div class="h-2 flex-1 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-1/3 shadow-[0_0_10px_#f48c25]"></div>
+</div>
+<span class="text-xs font-bold opacity-60 uppercase tracking-widest whitespace-nowrap">33% Complete</span>
+</div>
+</div>
+</body></html>
+
+<!-- Player Join & Avatar Selection -->
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Player Join &amp; Avatar Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#f48c25",
+              "accent-pink": "#ff4d94",
+              "background-light": "#f8f7f5",
+              "background-dark": "#221910",
+            },
+            fontFamily: {
+              "display": ["Spline Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .confetti-bg {
+            background-image: radial-gradient(#f48c25 10%, transparent 10%), radial-gradient(#ff4d94 10%, transparent 10%);
+            background-position: 0 0, 25px 25px;
+            background-size: 50px 50px;
+            opacity: 0.05;
+        }
+        .soft-gradient {
+            background: linear-gradient(135deg, #fffcf9 0%, #fff0e0 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#1c140d]">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden soft-gradient">
+<!-- Confetti Overlay Pattern -->
+<div class="absolute inset-0 confetti-bg pointer-events-none"></div>
+<!-- Top Navigation -->
+<div class="relative z-10 flex items-center p-4 justify-between">
+<div class="text-[#1c140d] flex size-12 shrink-0 items-center justify-center rounded-full bg-white/50 backdrop-blur-sm shadow-sm">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</div>
+<h2 class="text-[#1c140d] text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-12">Join Game</h2>
+</div>
+<!-- Hero Welcome Section -->
+<div class="relative z-10 px-6 pt-8 pb-4 text-center">
+<h1 class="text-[#1c140d] text-4xl font-bold leading-tight tracking-tight pb-3">Welcome to the Celebration!</h1>
+<p class="text-[#5e442e] text-lg font-normal leading-normal px-4">Pick a name and a buddy to start playing.</p>
+</div>
+<!-- Nickname Input Section -->
+<div class="relative z-10 flex flex-col gap-4 px-6 py-6">
+<label class="flex flex-col gap-2">
+<span class="text-[#1c140d] text-sm font-bold uppercase tracking-wider px-2">Your Nickname</span>
+<input class="form-input flex w-full rounded-full text-[#1c140d] focus:outline-0 focus:ring-4 focus:ring-primary/20 border-2 border-primary/20 bg-white h-16 placeholder:text-[#9c7349]/50 px-8 text-xl font-medium shadow-sm transition-all focus:border-primary" placeholder="Enter your nickname..." type="text"/>
+</label>
+</div>
+<!-- Avatar Selection Carousel -->
+<div class="relative z-10 mt-4">
+<div class="flex items-center justify-between px-6 pb-4">
+<h3 class="text-[#1c140d] text-lg font-bold tracking-tight">Choose Your Buddy</h3>
+<span class="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full uppercase">Swipe to see all</span>
+</div>
+<!-- Horizontal Scroll Area -->
+<div class="flex overflow-x-auto gap-6 px-6 py-4 no-scrollbar">
+<!-- Avatar Item 1: Puppy -->
+<div class="flex flex-col items-center gap-3 shrink-0">
+<div class="size-28 rounded-full bg-white p-1 ring-4 ring-primary shadow-lg overflow-hidden transform scale-110">
+<img class="w-full h-full object-cover rounded-full" data-alt="A cute golden retriever puppy smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIv9Vorb43qYvMoBZEQ3jljdD9wSCGRJANaEK65IfZp9VBR-jq5r5HYht54_Sav0klXmDFfdLF-CwnWgleGgZiDzlavV3_tLW3e5tBQ8f6Kp57Fq3QZIxntq_YXTW7lX6LltttpkW1P4z-HjsWqFOLSNGPegxDmTd_LI28AEbKYUDKbc_YpcvbsGqWQRSWOn_sPJBcPIznQdUg7XIolqu3Lgihfyql6Y8ApF6JJFtW_taDzDwHrKDNSf16Z8nbxo6WU2ldU8GTsUE"/>
+</div>
+<span class="text-sm font-bold text-[#1c140d]">Bubbly Pup</span>
+</div>
+<!-- Avatar Item 2: Kitten -->
+<div class="flex flex-col items-center gap-3 shrink-0">
+<div class="size-28 rounded-full bg-white p-1 ring-2 ring-primary/20 shadow-md overflow-hidden opacity-70">
+<img class="w-full h-full object-cover rounded-full" data-alt="A small fluffy white kitten with blue eyes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCin2_DG6nwiB0yaPVdpgpKlkbim4gWMheu5F_ztzesxiC-CLacad3U1T4RmlEMxErMGLWvwwQ506dLSrTyIdO1NdcTd5BWs0C6IyM58FGfq2Co8ebNYvSJN_1-wRG7aLuNLb2Rdy5gq3dATEaCnvneUD-0v1cfG31EeyxwTc-CIGzv_zIWh_wOdG_505hJXmYF0CvBlKn0e2Mhpdck9M4Vtcnhs-TIuQSSm7lj_qMor0cPLCVEX6PQfL-aYNo15yOzx7Dt60D90bA"/>
+</div>
+<span class="text-sm font-medium text-[#1c140d]/60 text-center">Fluffy Kitty</span>
+</div>
+<!-- Avatar Item 3: Panda -->
+<div class="flex flex-col items-center gap-3 shrink-0">
+<div class="size-28 rounded-full bg-white p-1 ring-2 ring-primary/20 shadow-md overflow-hidden opacity-70">
+<img class="w-full h-full object-cover rounded-full" data-alt="A cute chubby baby panda eating bamboo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-yTsoUDU-tAMy6ADxYpIBy6uoc4quyfhuBjJy1B0OTBMmHo-TOEoYEfV5S_CThAd4TRox__9dOzGXafNX3HQ-p8xnBrSeKEO6_yIwT56HdXRNUUYPc4oY4Fknj9Dohtee33Yuvog8ue1iSCQ46hBC4-TWKABFJhFQgZ60fMJFbISCHXYYXu21Igae-PyeJowZTV2otJZIQOnJeEOmMWWeqzmHPywYqi7Yi9JWW37In_-8RLp_GVvR1CU7fDoDdDLWg8Q-G02yszg"/>
+</div>
+<span class="text-sm font-medium text-[#1c140d]/60 text-center">Zen Panda</span>
+</div>
+<!-- Avatar Item 4: Bunny -->
+<div class="flex flex-col items-center gap-3 shrink-0">
+<div class="size-28 rounded-full bg-white p-1 ring-2 ring-primary/20 shadow-md overflow-hidden opacity-70">
+<img class="w-full h-full object-cover rounded-full" data-alt="A cute cartoon bunny with long ears" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC33mHZysMk41D8JKx9wayq4sZ9XjrOVQ3BbikmiTFKNaEEbZKx-RuLCm34eij_MUClD7HB2wHhjVYw4cQA9eNhvfYJDiPU1jbg_lKxdk8-He5963fZ4wPd9Fkl2FCoI9glxOJMJG6vIp84ApIYklCoKD1yTPoQhTgNEVSamI52Ns0H7NOqrHzhizQcGGsK5NRZpK-BQw2nQSWkQklfxhFb3F17Hk7QH-EdUXdc10Hw4hKgYMn1eorng2Y0QpMBwnVJ7P7KuX6H9JI"/>
+</div>
+<span class="text-sm font-medium text-[#1c140d]/60 text-center">Hopper</span>
+</div>
+</div>
+</div>
+<!-- Footer / Action Area -->
+<div class="mt-auto relative z-10 flex flex-col items-center gap-4 p-6 pb-10">
+<div class="flex items-center gap-2 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full border border-primary/10 mb-2">
+<span class="flex size-2 rounded-full bg-green-500 animate-pulse"></span>
+<p class="text-xs font-bold text-[#5e442e] uppercase tracking-widest">12 Players already joined!</p>
+</div>
+<button class="w-full h-18 py-5 bg-accent-pink hover:bg-[#e63c80] text-white text-xl font-black rounded-full shadow-[0_8px_24px_rgba(255,77,148,0.4)] active:scale-95 transition-all transform flex items-center justify-center gap-3">
+<span>GET READY</span>
+<span class="material-symbols-outlined font-bold">celebration</span>
+</button>
+<p class="text-xs text-[#9c7349] font-medium opacity-60">Waiting for host to start the fun...</p>
+</div>
+<!-- Hidden scrollbar styling -->
+<style>
+            .no-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+            .no-scrollbar {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        </style>
+</div>
+</body></html>
+
+<!-- Correct Answer Reveal -->
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Correct Answer Reveal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f48c25",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221910",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Spline Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .answer-glow {
+            box-shadow: 0 0 30px 10px rgba(244, 140, 37, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#1c140d] font-display">
+<div class="relative flex h-screen w-full flex-col overflow-hidden max-w-[430px] mx-auto bg-background-light shadow-2xl">
+<!-- Header -->
+<div class="flex items-center p-4 pb-2 justify-between z-10">
+<div class="text-[#1c140d] flex size-10 shrink-0 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm">
+<span class="material-symbols-outlined">close</span>
+</div>
+<div class="flex flex-col items-center flex-1">
+<h2 class="text-[#1c140d] text-lg font-extrabold leading-tight tracking-tight">Round 4/10</h2>
+<div class="flex gap-1 mt-1">
+<div class="h-1.5 w-8 rounded-full bg-primary"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary"></div>
+<div class="h-1.5 w-8 rounded-full bg-gray-200"></div>
+</div>
+</div>
+<div class="size-10"></div>
+</div>
+<!-- Main Game Floor View -->
+<div class="relative flex-1 px-4 py-2 overflow-hidden">
+<!-- Game Map Container -->
+<div class="relative h-full w-full rounded-xl bg-gray-100 overflow-hidden shadow-inner border-4 border-white">
+<!-- Isometric/Top-down Floor Mockup -->
+<div class="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-2 p-2">
+<!-- Zone A (Dimmed) -->
+<div class="relative rounded-lg bg-gray-300/50 flex flex-col items-center justify-center opacity-40 grayscale">
+<span class="text-4xl font-black text-gray-500">A</span>
+<p class="text-xs font-bold text-gray-500 mt-1 uppercase">The Groom</p>
+</div>
+<!-- Zone B (The Winner - Lit) -->
+<div class="relative rounded-lg bg-primary/20 border-4 border-primary answer-glow flex flex-col items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/30 to-transparent"></div>
+<span class="text-5xl font-black text-primary relative z-10">B</span>
+<p class="text-sm font-black text-primary mt-1 uppercase relative z-10">The Bride</p>
+<!-- Player Character in Zone B -->
+<div class="mt-4 relative z-10">
+<div class="size-12 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden flex items-center justify-center">
+<img alt="User Avatar" class="size-full object-cover" data-alt="Cartoon avatar of the player character" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeIvlIB6ykYbZCou4vtU6mjNBXRNdcnN8dWxgT08LCKIpZzczIasTI_nh7YQ71on7Pe7uXakkgTRYu6QgB_AKDSIPQeTO-rtTdaNwGkEsm2RQYmRJr4r-G5mRS1oAf9P1Qt_mY_HGWdO015qFC7dHm6NJH1jEKM5fzt2ElQk0_VjC7hDeqKI55t9gfpJLXq073dKwPtDBlnUcSETEN57PTr65lvUiNdGZ-UFbi3ovNzTmOQvo2RT7ghqd-XW2m4b1WNL0YqqOmBjM"/>
+</div>
+<div class="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap bg-primary text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                                +100 PTS!
+                            </div>
+</div>
+</div>
+<!-- Zone C (Dimmed) -->
+<div class="relative rounded-lg bg-gray-300/50 flex flex-col items-center justify-center opacity-40 grayscale">
+<span class="text-4xl font-black text-gray-500">C</span>
+<p class="text-xs font-bold text-gray-500 mt-1 uppercase">Best Man</p>
+</div>
+<!-- Zone D (Dimmed) -->
+<div class="relative rounded-lg bg-gray-300/50 flex flex-col items-center justify-center opacity-40 grayscale">
+<span class="text-4xl font-black text-gray-500">D</span>
+<p class="text-xs font-bold text-gray-500 mt-1 uppercase">Maid of Honor</p>
+</div>
+</div>
+<!-- Celebratory Overlay -->
+<div class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center p-6 bg-white/10">
+<!-- Floating Stars/Icons -->
+<span class="material-symbols-outlined absolute top-20 left-10 text-primary text-3xl opacity-80">star</span>
+<span class="material-symbols-outlined absolute top-40 right-12 text-primary text-2xl opacity-60">favorite</span>
+<span class="material-symbols-outlined absolute bottom-20 left-16 text-primary text-4xl opacity-70">celebration</span>
+<!-- Result Banner -->
+<div class="bg-primary text-white px-8 py-4 rounded-xl shadow-[0_10px_40px_rgba(244,140,37,0.5)] transform -rotate-2 border-4 border-white">
+<p class="text-xs font-bold tracking-[0.2em] uppercase text-center opacity-90 mb-1">Answer Revealed</p>
+<h1 class="text-5xl font-black tracking-tighter text-center italic">CORRECT!</h1>
+</div>
+<div class="mt-4 bg-white/95 backdrop-blur px-6 py-2 rounded-full shadow-lg border border-primary/20">
+<p class="text-[#1c140d] font-bold">You're on fire! 🔥</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Result Details Section -->
+<div class="px-6 py-4 flex flex-col items-center gap-4">
+<div class="w-full flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">emoji_events</span>
+</div>
+<div>
+<p class="text-xs text-gray-500 font-medium">New Total Score</p>
+<p class="text-xl font-black text-[#1c140d]">1,250 pts</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs text-gray-500 font-medium">Current Rank</p>
+<p class="text-xl font-black text-primary">#3</p>
+</div>
+</div>
+<!-- Next Round Progress Bar -->
+<div class="w-full bg-white rounded-full h-12 flex items-center px-2 relative border border-gray-100 shadow-sm overflow-hidden">
+<!-- Progress background -->
+<div class="absolute inset-y-0 left-0 bg-primary/10 w-[70%] rounded-r-full"></div>
+<div class="flex-1 flex justify-center items-center z-10 gap-2">
+<span class="text-sm font-bold text-[#1c140d]">Next Round in 5s</span>
+<span class="material-symbols-outlined text-primary text-sm animate-spin">refresh</span>
+</div>
+<button class="z-20 bg-primary text-white size-10 rounded-full flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="flex gap-2 border-t border-gray-100 bg-white px-4 pb-8 pt-3">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">sports_esports</span>
+<p class="text-xs font-bold leading-normal tracking-[0.015em]">Game</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-gray-400" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Players</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-gray-400" href="#">
+<span class="material-symbols-outlined">forum</span>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Chat</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-gray-400" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Rank</p>
+</a>
+</div>
+</div>
+</body></html>
+
+<!-- Player Join & Avatar Selection -->
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Host's Large Screen Game View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "game-red": "#ff4d4d",
+                        "game-blue": "#4d79ff",
+                        "game-yellow": "#ffcc00",
+                        "game-green": "#2ecc71",
+                        "primary": "#f48c25",
+                        "background-dark": "#1a1a1a",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        }
+        .bg-animated-mesh {
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+        }
+        .wedding-motif {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2v-4h4v-2H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .sparkle-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1' fill='%23f48c25' fill-opacity='0.4' /%3E%3Ccircle cx='80' cy='50' r='1.5' fill='%23ffd700' fill-opacity='0.6' /%3E%3Ccircle cx='40' cy='80' r='1' fill='%23f48c25' fill-opacity='0.3' /%3E%3Ccircle cx='90' cy='10' r='2' fill='%23ffd700' fill-opacity='0.5' /%3E%3C/svg%3E");
+        }
+        .timer-circle {
+            background: conic-gradient(#f48c25 75%, transparent 0);
+        }
+        .shadow-glow {
+            box-shadow: 0 0 40px rgba(0,0,0,0.3);
+        }
+        .glass-leaderboard {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-dark text-white overflow-hidden h-screen w-screen">
+<div class="fixed inset-0 bg-animated-mesh wedding-motif z-0"></div>
+<div class="relative z-10 h-full w-full flex flex-col p-8 gap-8 opacity-40 grayscale-[20%]">
+<div class="flex justify-between items-center bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+<div class="flex items-center gap-4">
+<div class="bg-primary p-3 rounded-xl shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-4xl font-bold">celebration</span>
+</div>
+<div>
+<h1 class="text-2xl font-black uppercase tracking-tighter">The Wedding Trivia</h1>
+<p class="text-primary font-bold text-sm tracking-widest">ROUND 4 / 10</p>
+</div>
+</div>
+<div class="flex items-center gap-6 bg-white/10 px-8 py-3 rounded-full border border-white/20">
+<div class="flex -space-x-3">
+<img alt="Player" class="size-10 rounded-full border-2 border-background-dark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIv9Vorb43qYvMoBZEQ3jljdD9wSCGRJANaEK65IfZp9VBR-jq5r5HYht54_Sav0klXmDFfdLF-CwnWgleGgZiDzlavV3_tLW3e5tBQ8f6Kp57Fq3QZIxntq_YXTW7lX6LltttpkW1P4z-HjsWqFOLSNGPegxDmTd_LI28AEbKYUDKbc_YpcvbsGqWQRSWOn_sPJBcPIznQdUg7XIolqu3Lgihfyql6Y8ApF6JJFtW_taDzDwHrKDNSf16Z8nbxo6WU2ldU8GTsUE"/>
+<img alt="Player" class="size-10 rounded-full border-2 border-background-dark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCin2_DG6nwiB0yaPVdpgpKlkbim4gWMheu5F_ztzesxiC-CLacad3U1T4RmlEMxErMGLWvwwQ506dLSrTyIdO1NdcTd5BWs0C6IyM58FGfq2Co8ebNYvSJN_1-wRG7aLuNLb2Rdy5gq3dATEaCnvneUD-0v1cfG31EeyxwTc-CIGzv_zIWh_wOdG_505hJXmYF0CvBlKn0e2Mhpdck9M4Vtcnhs-TIuQSSm7lj_qMor0cPLCVEX6PQfL-aYNo15yOzx7Dt60D90bA"/>
+<img alt="Player" class="size-10 rounded-full border-2 border-background-dark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-yTsoUDU-tAMy6ADxYpIBy6uoc4quyfhuBjJy1B0OTBMmHo-TOEoYEfV5S_CThAd4TRox__9dOzGXafNX3HQ-p8xnBrSeKEO6_yIwT56HdXRNUUYPc4oY4Fknj9Dohtee33Yuvog8ue1iSCQ46hBC4-TWKABFJhFQgZ60fMJFbISCHXYYXu21Igae-PyeJowZTV2otJZIQOnJeEOmMWWeqzmHPywYqi7Yi9JWW37In_-8RLp_GVvR1CU7fDoDdDLWg8Q-G02yszg"/>
+</div>
+<div class="text-right">
+<p class="text-3xl font-black text-white leading-none">150</p>
+<p class="text-[10px] uppercase font-bold text-white/60 tracking-widest">Players Live</p>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center gap-10">
+<div class="relative w-full max-w-6xl bg-white text-[#1c140d] p-16 rounded-[4rem] shadow-glow text-center transform perspective-1000">
+<span class="absolute -top-6 left-1/2 -translate-x-1/2 bg-primary text-white px-10 py-3 rounded-full font-black text-xl shadow-xl">QUESTION</span>
+<h2 class="text-6xl md:text-7xl font-extrabold leading-tight tracking-tight">
+                    Where did the happy couple have their very first date?
+                </h2>
+</div>
+<div class="relative size-48 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border-8 border-white/10"></div>
+<svg class="absolute inset-0 size-full -rotate-90">
+<circle class="text-primary" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-dasharray="552" stroke-dashoffset="140" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="bg-black/40 backdrop-blur-md size-36 rounded-full flex flex-col items-center justify-center border-2 border-white/20">
+<span class="text-6xl font-black">12</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-white/50">Seconds</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-6 h-64 mb-4">
+<div class="bg-game-red/20 border-4 border-game-red rounded-[3rem] p-6 flex flex-col items-center justify-between shadow-lg relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-2 bg-game-red"></div>
+<h3 class="text-2xl font-black text-center leading-tight">Cozy Coffee Shop</h3>
+<div class="bg-game-red text-white w-full py-4 rounded-2xl flex flex-col items-center shadow-lg transform group-hover:scale-105 transition-transform">
+<span class="text-4xl font-black leading-none">42</span>
+<span class="text-[10px] font-bold uppercase">Standing Here</span>
+</div>
+</div>
+<div class="bg-game-blue/20 border-4 border-game-blue rounded-[3rem] p-6 flex flex-col items-center justify-between shadow-lg relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-2 bg-game-blue"></div>
+<h3 class="text-2xl font-black text-center leading-tight">The Local Park</h3>
+<div class="bg-game-blue text-white w-full py-4 rounded-2xl flex flex-col items-center shadow-lg transform group-hover:scale-105 transition-transform">
+<span class="text-4xl font-black leading-none">28</span>
+<span class="text-[10px] font-bold uppercase">Standing Here</span>
+</div>
+</div>
+<div class="bg-game-yellow/20 border-4 border-game-yellow rounded-[3rem] p-6 flex flex-col items-center justify-between shadow-lg relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-2 bg-game-yellow"></div>
+<h3 class="text-2xl font-black text-center text-[#1c140d] leading-tight">Arcade &amp; Pizza</h3>
+<div class="bg-game-yellow text-[#1c140d] w-full py-4 rounded-2xl flex flex-col items-center shadow-lg transform group-hover:scale-105 transition-transform">
+<span class="text-4xl font-black leading-none">65</span>
+<span class="text-[10px] font-bold uppercase">Standing Here</span>
+</div>
+</div>
+<div class="bg-game-green/20 border-4 border-game-green rounded-[3rem] p-6 flex flex-col items-center justify-between shadow-lg relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-2 bg-game-green"></div>
+<h3 class="text-2xl font-black text-center leading-tight">The Library</h3>
+<div class="bg-game-green text-white w-full py-4 rounded-2xl flex flex-col items-center shadow-lg transform group-hover:scale-105 transition-transform">
+<span class="text-4xl font-black leading-none">15</span>
+<span class="text-[10px] font-bold uppercase">Standing Here</span>
+</div>
+</div>
+</div>
+</div>
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+<div class="relative w-[500px] glass-leaderboard rounded-[3rem] p-1 shadow-2xl overflow-hidden border border-white/40">
+<div class="absolute inset-0 sparkle-bg opacity-30 pointer-events-none"></div>
+<div class="relative z-10 p-10 flex flex-col items-center">
+<div class="bg-white/50 backdrop-blur-md p-4 rounded-full mb-6 border border-white/50 shadow-sm">
+<span class="material-symbols-outlined text-5xl text-yellow-500 block" style="font-variation-settings: 'FILL' 1">crown</span>
+</div>
+<h2 class="text-4xl font-black text-gray-900 uppercase tracking-tight mb-8">Current Leaders</h2>
+<div class="w-full space-y-4">
+<div class="flex items-center justify-between bg-gradient-to-r from-yellow-50 to-white/80 p-5 rounded-3xl border-2 border-yellow-400/30 shadow-md">
+<div class="flex items-center gap-5">
+<div class="relative">
+<img alt="1st Place Avatar" class="size-16 rounded-2xl border-2 border-white object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIv9Vorb43qYvMoBZEQ3jljdD9wSCGRJANaEK65IfZp9VBR-jq5r5HYht54_Sav0klXmDFfdLF-CwnWgleGgZiDzlavV3_tLW3e5tBQ8f6Kp57Fq3QZIxntq_YXTW7lX6LltttpkW1P4z-HjsWqFOLSNGPegxDmTd_LI28AEbKYUDKbc_YpcvbsGqWQRSWOn_sPJBcPIznQdUg7XIolqu3Lgihfyql6Y8ApF6JJFtW_taDzDwHrKDNSf16Z8nbxo6WU2ldU8GTsUE"/>
+<div class="absolute -top-2 -left-2 bg-yellow-400 text-white size-8 rounded-full flex items-center justify-center font-black text-lg shadow-lg">1</div>
+</div>
+<div>
+<h4 class="text-xl font-extrabold text-gray-900">Alex J.</h4>
+<p class="text-xs font-bold text-yellow-600 uppercase tracking-widest">Top Scorer</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-2xl font-black text-gray-900">2,850</span>
+<p class="text-[10px] font-bold text-gray-400 uppercase">PTS</p>
+</div>
+</div>
+<div class="flex items-center justify-between bg-white/60 p-5 rounded-3xl border border-gray-200/50 shadow-sm">
+<div class="flex items-center gap-5">
+<div class="relative">
+<img alt="2nd Place Avatar" class="size-14 rounded-2xl border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCin2_DG6nwiB0yaPVdpgpKlkbim4gWMheu5F_ztzesxiC-CLacad3U1T4RmlEMxErMGLWvwwQ506dLSrTyIdO1NdcTd5BWs0C6IyM58FGfq2Co8ebNYvSJN_1-wRG7aLuNLb2Rdy5gq3dATEaCnvneUD-0v1cfG31EeyxwTc-CIGzv_zIWh_wOdG_505hJXmYF0CvBlKn0e2Mhpdck9M4Vtcnhs-TIuQSSm7lj_qMor0cPLCVEX6PQfL-aYNo15yOzx7Dt60D90bA"/>
+<div class="absolute -top-2 -left-2 bg-slate-400 text-white size-7 rounded-full flex items-center justify-center font-black text-base shadow-md">2</div>
+</div>
+<div>
+<h4 class="text-lg font-bold text-gray-800">Sarah Bloom</h4>
+<p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Rising Star</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xl font-black text-gray-800">2,420</span>
+<p class="text-[10px] font-bold text-gray-400 uppercase">PTS</p>
+</div>
+</div>
+<div class="flex items-center justify-between bg-white/60 p-5 rounded-3xl border border-gray-200/50 shadow-sm">
+<div class="flex items-center gap-5">
+<div class="relative">
+<img alt="3rd Place Avatar" class="size-14 rounded-2xl border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-yTsoUDU-tAMy6ADxYpIBy6uoc4quyfhuBjJy1B0OTBMmHo-TOEoYEfV5S_CThAd4TRox__9dOzGXafNX3HQ-p8xnBrSeKEO6_yIwT56HdXRNUUYPc4oY4Fknj9Dohtee33Yuvog8ue1iSCQ46hBC4-TWKABFJhFQgZ60fMJFbISCHXYYXu21Igae-PyeJowZTV2otJZIQOnJeEOmMWWeqzmHPywYqi7Yi9JWW37In_-8RLp_GVvR1CU7fDoDdDLWg8Q-G02yszg"/>
+<div class="absolute -top-2 -left-2 bg-orange-400 text-white size-7 rounded-full flex items-center justify-center font-black text-base shadow-md">3</div>
+</div>
+<div>
+<h4 class="text-lg font-bold text-gray-800">WeddingVibes</h4>
+<p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Steady Pace</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xl font-black text-gray-800">2,180</span>
+<p class="text-[10px] font-bold text-gray-400 uppercase">PTS</p>
+</div>
+</div>
+</div>
+<div class="mt-8 flex gap-2">
+<span class="material-symbols-outlined text-yellow-400/40 text-sm">star</span>
+<span class="material-symbols-outlined text-yellow-400/80 text-xl">star</span>
+<span class="material-symbols-outlined text-yellow-400/40 text-sm">star</span>
+</div>
+</div>
+</div>
+</div>
+<div class="fixed top-20 left-10 text-primary/20 pointer-events-none select-none">
+<span class="material-symbols-outlined text-8xl">favorite</span>
+</div>
+<div class="fixed bottom-20 right-10 text-primary/20 pointer-events-none select-none">
+<span class="material-symbols-outlined text-8xl">auto_awesome</span>
+</div>
+
+</body></html>
+
+<!-- Live Game Interactive Arena -->
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Live Game Interactive Arena</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f48c25",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221910",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Spline Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .arena-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            height: 100%;
+        }
+        .avatar-float {
+            position: absolute;
+            transition: all 0.5s ease-out;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#1c140d] overflow-hidden select-none">
+<!-- Main Mobile Container (iOS Centric) -->
+<div class="relative flex h-screen w-full flex-col max-w-md mx-auto overflow-hidden">
+<!-- Header / Status Bar Area -->
+<div class="flex items-center justify-between px-6 pt-12 pb-4 bg-background-light/80 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-2">
+<div class="bg-primary/20 p-2 rounded-full">
+<span class="material-symbols-outlined text-primary text-xl">groups</span>
+</div>
+<span class="font-bold text-sm tracking-tight">128 Players</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase tracking-widest text-[#9c7349] font-bold">Rank</span>
+<span class="font-bold text-primary">#4</span>
+</div>
+<!-- Countdown Timer Circle -->
+<div class="relative flex items-center justify-center size-12">
+<svg class="size-full -rotate-90" viewbox="0 0 36 36">
+<circle class="stroke-primary/20" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-primary" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="35" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<span class="absolute text-sm font-bold">15</span>
+</div>
+</div>
+</div>
+<!-- Question Card (Top 25%) -->
+<div class="px-4 py-2 z-40">
+<div class="bg-white dark:bg-[#2d2218] rounded-xl p-6 shadow-xl border-b-4 border-primary/10">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold text-primary uppercase tracking-tighter bg-primary/10 px-2 py-1 rounded-full">Question 5 of 12</span>
+<span class="material-symbols-outlined text-[#9c7349]">info</span>
+</div>
+<h1 class="text-xl font-bold leading-tight text-[#1c140d] dark:text-white">
+                    What is the bride's favorite food?
+                </h1>
+</div>
+</div>
+<!-- Interactive Arena (Remaining 75%) -->
+<div class="flex-1 relative mt-4 px-2 pb-24 overflow-hidden">
+<div class="arena-grid gap-2 h-full rounded-xl overflow-hidden border-2 border-primary/5">
+<!-- Zone A: Red -->
+<div class="relative bg-red-500/10 border-2 border-red-500/20 flex flex-col items-center justify-center overflow-hidden">
+<span class="text-4xl font-black text-red-500/20 absolute -top-2 -left-2">A</span>
+<div class="bg-white/80 dark:bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm z-10 border border-red-200">
+<p class="font-bold text-red-600">Pizza</p>
+</div>
+</div>
+<!-- Zone B: Blue -->
+<div class="relative bg-blue-500/10 border-2 border-blue-500/20 flex flex-col items-center justify-center overflow-hidden">
+<span class="text-4xl font-black text-blue-500/20 absolute -top-2 -right-2">B</span>
+<div class="bg-white/80 dark:bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm z-10 border border-blue-200">
+<p class="font-bold text-blue-600">Sushi</p>
+</div>
+</div>
+<!-- Zone C: Yellow -->
+<div class="relative bg-yellow-500/10 border-2 border-yellow-500/20 flex flex-col items-center justify-center overflow-hidden">
+<span class="text-4xl font-black text-yellow-500/20 absolute -bottom-2 -left-2">C</span>
+<div class="bg-white/80 dark:bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm z-10 border border-yellow-200">
+<p class="font-bold text-yellow-600">Tacos</p>
+</div>
+</div>
+<!-- Zone D: Green -->
+<div class="relative bg-green-500/10 border-2 border-green-500/20 flex flex-col items-center justify-center overflow-hidden">
+<span class="text-4xl font-black text-green-500/20 absolute -bottom-2 -right-2">D</span>
+<div class="bg-white/80 dark:bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm z-10 border border-green-200">
+<p class="font-bold text-green-600">Pasta</p>
+</div>
+</div>
+</div>
+<!-- Avatars Layer (Faking real-time movement) -->
+<div class="absolute inset-0 pointer-events-none p-6">
+<!-- User Avatar (Centered Highlight) -->
+<div class="avatar-float flex flex-col items-center" style="top: 60%; left: 45%;">
+<div class="size-12 rounded-full border-4 border-primary shadow-lg overflow-hidden ring-4 ring-primary/20 bg-white">
+<img alt="User Avatar" class="size-full object-cover" data-alt="Cartoon avatar of a smiling man with brown hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMsyA_RZc9Dd_0gEkJmkQHVI426mofkF-SgxZb6yUlKQBOuUutQw0GvUthSAHefbT7kJRAAxuQQOuM7WpCrQl_1AUxIzTRrQIH-i8hL8GAPyW8-vNQ9mCooJLGp_MDt137d1UEnC3vOC2nWov_pBhQMOhUs04wT8wvVTi0fHYF4Te1W__M8biWzAso9-MPsNMjGNbTVFu1KrlFfzkB6CvrG4lkDA0if16D_od_prUwsWVZZC3W3lv83ysEEOMJbQmhuqqQ5-4UPPE"/>
+</div>
+<span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full -mt-2 shadow-sm">YOU</span>
+</div>
+<!-- NPC Avatars (Scattered) -->
+<div class="avatar-float opacity-80" style="top: 20%; left: 20%;">
+<div class="size-8 rounded-full border-2 border-white shadow bg-white overflow-hidden">
+<img alt="Player Avatar" data-alt="Avatar of a woman with long blonde hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS406eUEssGZCdHIONeqAUvG9hfm7twFg8zNIdSgj-1AUHegloJXARrgMTk53aR_wirXknmu6kvvGoG8nfYvU2pSlNYRoJOE702tyfzSFmPJ3FScmx-A_1515xv_rCTpgVwKDfZIjV2OlY-Rdmi5MeZ1LXRkKnnyq8SNSDybNs1exWZLm6aMiELvIAxy7Ec0qZokdIJXkOIUFswhCwL6vd8OQM7e8vU_36j_eBpEEPAT9AfHwgAqoD4OPmlgRpkI2HWybAJEwUB0w"/>
+</div>
+</div>
+<div class="avatar-float opacity-80" style="top: 15%; left: 70%;">
+<div class="size-8 rounded-full border-2 border-white shadow bg-white overflow-hidden">
+<img alt="Player Avatar" data-alt="Avatar of a man with spectacles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKpYdMmC0fVy-Mf2EgvxYxRjwn-9enzwWb5Vek3yyjN4LtJYPluG7GFHS6mgd4mZGzaxEDkWbfybH8RjSRjrgAh8XYWIZv19HvFVb_ab0CUw48C_3G2OQSofOfwvbK9FQdIC5bWLiqgTccmPvkSbLCN8Fy1ta2X4-no7Zz_5h878sJ4eFxS90YXUGDtgF1dGdRCbSoTBq1FFlDIOdn3Au5YFwo-mayo72mXTm7euVOfDcZupkUiJVNILIolLjV7om1y7BBDjWKIHo"/>
+</div>
+</div>
+<div class="avatar-float opacity-80" style="top: 75%; left: 80%;">
+<div class="size-8 rounded-full border-2 border-white shadow bg-white overflow-hidden">
+<img alt="Player Avatar" data-alt="Avatar of a woman with a headscarf" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqspJQr3anZH2o2h5UEEp1-Dy_5D3uvgAF-LcCpOn2kqF4Gl2axQQJPh8iqsMuO3atPGLkU_w0iCJyW2h9syC97UglIXgO3uwyyQHawfl79M1URSRC2-6hb2GUyWUMN8j5ts9QSBooauy42SeafGWwt1HAWM7AVxA5Tkc3T1W5bWSWLlUb93Tqgpcpf-Cwy-uuAvsz62BgYWbchi6ayj2QnD2XFoHfFMtCaJadMTkxT7RDoS0jwIp_7CAsRhWkqn8FV8IJUKOwuO4"/>
+</div>
+</div>
+<div class="avatar-float opacity-80" style="top: 80%; left: 15%;">
+<div class="size-8 rounded-full border-2 border-white shadow bg-white overflow-hidden">
+<img alt="Player Avatar" data-alt="Avatar of a smiling young boy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr3y3ZWwTVw7c95l3i8SvAbBpdHbHFG8vQl59--7MebSQWskjbG15ns7qe6ETPgLl_tugWfIQvv4mvT3_X2VkbmOTOFxtkNg2oC0e6EdZ37YhcEZWb6ywViISYddjvUV59Zs1EoYFdTZoSWawHX20ntMziTZhzd2rYIBgWPTRcWF9Ctdp3vSe-HOhNfA1QqyAsw0dq3mR26Gzw8nDQXVDL4-MWDtiLaqApaV424TP57VCU7DXLIyHQFQviagEKtVTOfbnWHbPZlgw"/>
+</div>
+</div>
+<div class="avatar-float opacity-80" style="top: 30%; left: 45%;">
+<div class="size-8 rounded-full border-2 border-white shadow bg-white overflow-hidden">
+<img alt="Player Avatar" data-alt="Avatar of a girl with space buns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr7R7XOvRVMvnqTWtfhkmnfwH0q_izIfxfeKpZtoc3pBIMwVPB9pM5p2sF0FNTWitxaJ43OgSO8vKRB6LCse_rO1uJrwUYhuIeQo0fT1wpJxzSC4n06IrFOsG9X7Z5QicsmEJ3WO99EbqEdx-rPPETS1Pketz3b5vT7j_z7s1R7iyvJUHsdE2iOtz_aaAfk9VB1wMGwxJWEmc_bEKdzuRgQQzv8aO7dxkfeNjC9VRiB6BupSVLcL5dlyaqcsLs5SSk1YUuBAnZ_kI"/>
+</div>
+</div>
+<div class="avatar-float opacity-80" style="top: 55%; left: 10%;">
+<div class="size-8 rounded-full border-2 border-white shadow bg-white overflow-hidden">
+<img alt="Player Avatar" data-alt="Avatar of a man with a beard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAVfxnUmCCrN4jrvckdcIAcX9fVNRlFFcx9T-3PTvrNGXXQ5YQVfFxCLZHcGhTq4EkcVSJXv84RAKpFefS4Mxb61qyR_skh2WSuvxpfw_EK8UaF1XEtl1OdhrA8zNDEAr8uv4P1KbDsL2aGatXZZ8ec4PhOrg1AYZUvq1TyPWXpYGNaBRMgwTwJTOAYN97fu-z-89yebLvEPBfTA6ak5ejwWWK6vTIEvCbIvzroiI892I3VTeHGvQ8w3h15OExAtWP_QnFqiic3To"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Instructions -->
+<div class="absolute bottom-28 left-0 right-0 flex justify-center z-50 pointer-events-none">
+<div class="bg-black/60 backdrop-blur-md text-white px-6 py-3 rounded-full flex items-center gap-3 shadow-2xl border border-white/10">
+<span class="material-symbols-outlined animate-pulse text-primary">touch_app</span>
+<p class="text-sm font-medium">Tap a zone to move!</p>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-background-dark/90 backdrop-blur-xl border-t border-[#f4ede7] pb-8 pt-3 px-6 flex justify-around items-center z-50 max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined fill-1">gamepad</span>
+<span class="text-[10px] font-bold">Play</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#9c7349]" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="text-[10px] font-bold">Ranks</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#9c7349]" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="text-[10px] font-bold">Chat</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#9c7349]" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Me</span>
+</a>
+</div>
+</div>
+</body></html>
+
+<!-- Host Leaderboard Popup 16:9 -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Host Leaderboard Popup 16:9</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f48c25",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221910",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(34, 25, 16, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(244, 140, 37, 0.2);
+        }
+        .glow-primary {
+            box-shadow: 0 0 40px rgba(244, 140, 37, 0.4);
+        }
+        .bg-pattern {
+            background-image: radial-gradient(circle at 20% 30%, rgba(244, 140, 37, 0.15) 0%, transparent 40%),
+                              radial-gradient(circle at 80% 70%, rgba(244, 140, 37, 0.1) 0%, transparent 40%);
+        }
+        .firework-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #f48c25;
+            opacity: 0.6;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden">
+<!-- Main 16:9 Container for Projector/Host Screen -->
+<div class="relative w-screen h-screen aspect-[16/9] flex flex-col items-center justify-start bg-background-dark bg-pattern p-8">
+<!-- Abstract Confetti/Fireworks Decoration Layer -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
+<div class="firework-particle top-1/4 left-1/4 scale-150 bg-yellow-400"></div>
+<div class="firework-particle top-1/3 right-1/4 scale-125 bg-primary"></div>
+<div class="firework-particle bottom-1/4 left-1/2 scale-150 bg-orange-300"></div>
+<div class="firework-particle top-10 right-10 scale-75 bg-white"></div>
+<div class="absolute top-1/4 left-10 w-32 h-32 border-2 border-primary/20 rounded-full animate-pulse"></div>
+<div class="absolute bottom-1/4 right-10 w-48 h-48 border-2 border-primary/10 rounded-full animate-pulse"></div>
+</div>
+<!-- Correct Answer Banner -->
+<div class="relative z-20 w-full max-w-5xl mb-8">
+<div class="bg-primary/20 border-2 border-primary/50 rounded-xl py-6 px-12 flex flex-col items-center justify-center glow-primary">
+<p class="text-primary font-bold tracking-widest text-xl uppercase mb-1">Correct Answer Revealed</p>
+<h1 class="text-white text-5xl font-bold tracking-tight text-center">THE VENUE IN TUSCANY</h1>
+</div>
+</div>
+<!-- Central Leaderboard Popup -->
+<div class="relative z-30 w-full max-w-6xl flex-1 flex flex-col items-center justify-center">
+<div class="glass w-full rounded-xl p-10 flex flex-col items-center">
+<!-- Trophy Icon & Header -->
+<div class="flex items-center gap-4 mb-10">
+<span class="material-symbols-outlined text-primary text-6xl">trophy</span>
+<h2 class="text-4xl font-bold text-white tracking-tight">Top 3 Wedding Champions</h2>
+<span class="material-symbols-outlined text-primary text-6xl">trophy</span>
+</div>
+<!-- Leaderboard Podiums -->
+<div class="flex items-end justify-center gap-8 w-full">
+<!-- 2nd Place -->
+<div class="flex flex-col items-center w-64">
+<div class="relative mb-4">
+<div class="w-24 h-24 rounded-full border-4 border-slate-400 p-1">
+<img alt="Profile picture of Sarah" class="w-full h-full object-cover rounded-full" data-alt="Woman smiling in casual outfit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrEphxYkLFuE8aXO4u50wXyUzAMqB63e_vclTy3LRK1sYHFhFifHSuIkWbav3jEnGuln8tW8Pubrkqi8MkFcdOVrtl1QbW8U5cl4pRMj_h21ALz0HVks3tx_wTcmnJMd6JMmbk0ncGl9_db2FP7BBzF-AjD_8y2YW-vFC26PTlu72Pc4-U0wV7P1kMA5cCHlwD0c3FiKtCQuiNwPWcLHLFm3y71tKbF4fkthxcu_q4NZHUyM7kaa8w4gzA7RGa1ojpvy62W3MxDaA"/>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-slate-400 w-10 h-10 rounded-full flex items-center justify-center text-background-dark font-bold border-4 border-background-dark">2</div>
+</div>
+<div class="bg-white/5 w-full rounded-t-xl p-6 text-center border-x border-t border-white/10 h-40 flex flex-col justify-end">
+<p class="text-2xl font-bold text-white truncate w-full">Sarah J.</p>
+<p class="text-3xl font-bold text-primary">14,250</p>
+<p class="text-sm text-primary/60 mt-1 uppercase tracking-widest font-bold">Points</p>
+</div>
+</div>
+<!-- 1st Place -->
+<div class="flex flex-col items-center w-72">
+<div class="relative mb-6 scale-110">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2">
+<span class="material-symbols-outlined text-primary text-5xl animate-bounce">stat_3</span>
+</div>
+<div class="w-32 h-32 rounded-full border-4 border-primary p-1 glow-primary bg-primary/20">
+<img alt="Profile picture of James" class="w-full h-full object-cover rounded-full" data-alt="Man with a friendly expression and beard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOuOWIE0VZtSwOMSEUk0rVHYKBbCDERmxcykB4tshx_Ps7u2qsxx7_YHGd9bsfTQBSk1cs7WflyuNHJ9etYXCYBb4YMWQG2r35IFRiuU2XR5q4DuL0wun3tOQBQwYVUaS97I1U7pfUGCS__y76cSldyogwGOwtwm2VRdwBt__i9ZUJ3SbSO6VdBe-JTbu0tAiS644PuqU8I4F47Af2T67wqedwfafrGR_OFSBI92XXWT9vNjdCd6ByW1pXCJADSZmhdE1rwwWX_78"/>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-primary w-12 h-12 rounded-full flex items-center justify-center text-white text-xl font-bold border-4 border-background-dark">1</div>
+</div>
+<div class="bg-primary/20 w-full rounded-t-xl p-8 text-center border-x border-t border-primary/40 h-56 flex flex-col justify-end relative">
+<div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+<p class="text-3xl font-bold text-white truncate w-full mb-1">James Miller</p>
+<p class="text-5xl font-bold text-primary">15,800</p>
+<p class="text-md text-primary/80 mt-1 uppercase tracking-widest font-bold">Wedding MVP</p>
+</div>
+</div>
+<!-- 3rd Place -->
+<div class="flex flex-col items-center w-64">
+<div class="relative mb-4">
+<div class="w-24 h-24 rounded-full border-4 border-orange-800 p-1">
+<img alt="Profile picture of Michael" class="w-full h-full object-cover rounded-full" data-alt="Woman with professional headshot appearance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADuVi0j8HYkThXQov2UgVkUnCt6Lt1KY3z0suOTeCgpYSKnyv8Y_-ny0iok43rLnstrVMnbZrXo3TdAt1BuRNmEkxYgiI6mEWLbTD3uOhvKT89c7_AybaeQD3-wKbq-DgcR1SwEMFWy5-2AitGcniXTCOR8FugXuD_mYZZT1rZi2XWcXUZecWUaPZ1GHWj97RQ3xjmVp9A2EpqJq-UO8XaQSTs2prykxToUhb0QlTd-k9gdRZvPF-RcjFxZpnXR_Tm-9l7lEeJ8V4"/>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-orange-800 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold border-4 border-background-dark">3</div>
+</div>
+<div class="bg-white/5 w-full rounded-t-xl p-6 text-center border-x border-t border-white/10 h-32 flex flex-col justify-end">
+<p class="text-2xl font-bold text-white truncate w-full">Michael K.</p>
+<p class="text-3xl font-bold text-primary">12,900</p>
+<p class="text-sm text-primary/60 mt-1 uppercase tracking-widest font-bold">Points</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation / Stats Bar -->
+<div class="w-full mt-8 flex justify-between items-center px-4">
+<div class="flex items-center gap-6">
+<div class="flex -space-x-4">
+<img alt="Player avatar" class="w-12 h-12 rounded-full border-4 border-background-dark" data-alt="Small round icon of person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWxQ3KIhrguZB6iz7fZA3OTAb7pGmiSGLtPM7cHuzCNNSiOEfkrFzAM7o9FYYM3KnAyz5ATAwxv7cNi1fdzkkO3uwsFECTSXlfIwdcJPDYwE-tZBkue9EA8bI5r7Wg5quNhcgx8Mc0TJYM-OQFKBu1gLr6u5o6byz1HDIipfDG__N_s3WCFG4q0ke-XvflbcRZJo7lhx7FhdY7YGOieXYZpf1809hnBH_4M4wnGbLNFZ3OC6ocawWvEawtQ_5Pk54luf6vUFGnRuA"/>
+<img alt="Player avatar" class="w-12 h-12 rounded-full border-4 border-background-dark" data-alt="Small round icon of person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcXc7w-lI7JIoYVBNqrhspPwtA5HULMEqpmijakQqEkPFs60X0CWRYmN3vdHff_mQ-sqU4_8UdH9gICrugx_QYIeS0DLY-Zr9bu1jX656-fD5fReFKHf8XEty2ABEFffxvnpYI7MUguneaMVshWJliNHwar-iLW1sPex20RLw0y_gsF2cwl_vhdqbc_XPWxyEAI6chaGCSqeia--Hp0Bd9CknukF-3CFfHJLGsFeJ4GYzKOc7WlvKnAUk55t5KYLm7QJycMLXRxbw"/>
+<img alt="Player avatar" class="w-12 h-12 rounded-full border-4 border-background-dark" data-alt="Small round icon of person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDojRc2AzpkMPa6YqL-hEkiXFeMhxIoow9cf7RqpNzyabha1smKClAupsUvj854QhEU2b6y9DYpuTys_ZQdFl_0bmkhO3YaqENzHIwrLZCyleUE-IIVm96eiWySn5LSCFD-3hrqk0IKpgmA1HE5TW9ySwtKl94TRy6rksPHFlPfoyaxis_4hiz8xZAmT7VznXL4lDv1U0zXtctfcTrb9ZVKh8wg1PODAEk9x9R4VTBd_IezdYiLdnKrxe9NAYoPiZk5SRK54NNqzc"/>
+<div class="w-12 h-12 rounded-full border-4 border-background-dark bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">+84</div>
+</div>
+<p class="text-primary/80 font-medium">87 guests playing live</p>
+</div>
+<div class="flex items-center gap-4 bg-primary/10 px-6 py-3 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-primary">timer</span>
+<p class="text-xl font-bold text-white uppercase tracking-wider">Next Question in <span class="text-primary">05s</span></p>
+</div>
+<div class="flex gap-4">
+<button class="bg-white/5 hover:bg-white/10 p-3 rounded-full border border-white/10 transition-colors">
+<span class="material-symbols-outlined text-white">share</span>
+</button>
+<button class="bg-primary text-white font-bold px-8 py-3 rounded-full flex items-center gap-2 hover:bg-primary/90 transition-all shadow-lg">
+<span>NEXT ROUND</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Background Confetti Elements (Floating) -->
+<div class="fixed top-20 left-1/4 transform -rotate-12 bg-primary/30 w-4 h-12 rounded-full blur-sm"></div>
+<div class="fixed top-1/2 right-10 transform rotate-45 bg-yellow-500/20 w-8 h-8 rounded-lg blur-md"></div>
+<div class="fixed bottom-20 left-10 transform -rotate-45 bg-primary/20 w-6 h-6 rounded-full blur-md"></div>
+</body></html>
+
+<!-- Final Rankings & Winners -->
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Final Rankings &amp; Winners</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#f48c25",
+                "background-light": "#f8f7f5",
+                "background-dark": "#221910",
+              },
+              fontFamily: {
+                "display": ["Spline Sans", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .podium-gradient {
+            background: linear-gradient(180deg, rgba(244, 140, 37, 0.1) 0%, rgba(244, 140, 37, 0.05) 100%);
+        }
+        .confetti-bg {
+            background-image: radial-gradient(#f48c25 1px, transparent 1px), radial-gradient(#f48c25 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            opacity: 0.05;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#1c140d] selection:bg-primary/30">
+<div class="relative flex h-screen w-full flex-col overflow-hidden max-w-[430px] mx-auto shadow-2xl bg-background-light">
+<!-- Festive Decorative Background Elements -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden">
+<div class="confetti-bg absolute inset-0"></div>
+<div class="absolute -top-10 -left-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="absolute top-20 -right-10 w-60 h-60 bg-primary/5 rounded-full blur-3xl"></div>
+</div>
+<!-- Header Navigation -->
+<div class="relative flex items-center p-4 justify-between z-10">
+<div class="text-[#1c140d] flex size-10 shrink-0 items-center justify-center rounded-full bg-white/50 backdrop-blur-sm border border-[#f4ede7]" data-icon="CaretLeft">
+<span class="material-symbols-outlined">chevron_left</span>
+</div>
+<h2 class="text-[#1c140d] text-lg font-bold leading-tight tracking-tight flex-1 text-center">Final Leaderboard</h2>
+<div class="size-10 flex items-center justify-center rounded-full bg-white/50 backdrop-blur-sm border border-[#f4ede7]">
+<span class="material-symbols-outlined text-primary">share</span>
+</div>
+</div>
+<!-- Success Message -->
+<div class="relative z-10 flex flex-col items-center pt-6 pb-2 px-4 text-center">
+<div class="mb-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest">
+<span class="material-symbols-outlined text-[16px]">celebration</span>
+                Game Completed
+            </div>
+<h1 class="text-[#1c140d] text-4xl font-bold leading-tight mb-2">Congratulations!</h1>
+<p class="text-[#9c7349] text-base font-normal max-w-[280px]">Amazing energy at the Miller Wedding! Here are our champions.</p>
+</div>
+<!-- Podium Section -->
+<div class="relative z-10 flex-1 flex flex-col justify-end px-4 pb-4">
+<div class="flex items-end justify-center gap-2 h-full max-h-[320px] mb-8">
+<!-- 2nd Place -->
+<div class="flex flex-col items-center flex-1 animate-fadeIn">
+<div class="relative mb-3">
+<div class="size-16 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+<img alt="2nd place avatar" class="w-full h-full object-cover" data-alt="Cartoon avatar of a smiling man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsjePP326H7NgEFyhc2E60WXNu-wLWKdSmNC-TgUD3pfv08vYWxO4MK1t0bTXbFJ46cQkpvEcY7MW2eqAcNEwV4lcYD5fNKzEP6ZrwtJsNtwuR7ZigGaXCZ4t0jkwfYystjSHXTuIYH4orJMxVqOd7gtVXtCSJaC1PcILOi5MB1QZOEu_YykAtlpK5btpFQvy-GvdnB5Vsji90_a0yD3Nkt_CydzrTPI0CmiifM63JnUXvUhWS7hZ3zh5-6SckvMODhLoCQN7_WZw"/>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#C0C0C0] text-white size-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white">2</div>
+</div>
+<div class="podium-gradient w-full h-24 rounded-t-xl border-x border-t border-primary/10 flex flex-col items-center pt-4">
+<p class="text-xs font-bold truncate px-1">James T.</p>
+<p class="text-[10px] text-primary font-medium">1,120 pts</p>
+</div>
+</div>
+<!-- 1st Place -->
+<div class="flex flex-col items-center flex-1 z-20">
+<div class="relative mb-3 -mt-12">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 text-primary">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1">workspace_premium</span>
+</div>
+<div class="size-24 rounded-full border-4 border-primary shadow-xl overflow-hidden bg-white ring-8 ring-primary/5">
+<img alt="1st place avatar" class="w-full h-full object-cover" data-alt="Cartoon avatar of a woman with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKsa6BkGsw4RBzQn598IZICrV6Y4-X5H4mVI_Uvokp6t2FIPCKrnqG47rnkEjE3DBRTX0F0EKvi6XCUrueowHyCIBm2b-7xVfQ1Gzudqz2XYM5-_TxjCKNE8zwdYNvR_8N8XQ_RWnYDifphWVSgtbmZ_lqooBXfaJQCzDLsrORh8Qqw7A5g7Y_ccoV6ECwLhviM7aunL2WK0Mu7cvcENEfF_Ih69nCxSXMTCgF9_3JsyQXE7v1cP3sXgYcuY7McllvoCarKeCvofg"/>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-white size-8 rounded-full flex items-center justify-center text-sm font-bold border-2 border-white">1</div>
+</div>
+<div class="bg-primary w-full h-40 rounded-t-xl shadow-lg flex flex-col items-center pt-6">
+<p class="text-white text-sm font-bold truncate px-1">Sarah W.</p>
+<p class="text-white/80 text-xs font-medium">1,450 pts</p>
+<div class="mt-4 px-2 py-1 bg-white/20 rounded-full text-[10px] text-white font-bold uppercase tracking-tighter">🏆 MVP</div>
+</div>
+</div>
+<!-- 3rd Place -->
+<div class="flex flex-col items-center flex-1">
+<div class="relative mb-3">
+<div class="size-14 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+<img alt="3rd place avatar" class="w-full h-full object-cover" data-alt="Cartoon avatar of a girl with a hat" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABu3OkAU1haFSy1DGizpbAPfuz2446mO00N00mmEB0LpG1PKoqZ9MvoK729OfNQkxmBq9G1wxdeysfLq5mzcC2PEwRf4wvxmSQM_WQGQAIOQGqxualZ7wdxCJGuodNKKTmW7xjsgQ1UdAXBzuPBqqstsRj4IAlk3WE7q8ktUNvBbROydIavS_ztpvwU-AJETECwPs_Rzq89G-Wz6wyLV5iecjh5EQAivE1Q99ipwAqTSUVD7YuB1sjyMNTfyu4GqLMDWNFvwh7in0"/>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#CD7F32] text-white size-5 rounded-full flex items-center justify-center text-[9px] font-bold border-2 border-white">3</div>
+</div>
+<div class="podium-gradient w-full h-20 rounded-t-xl border-x border-t border-primary/10 flex flex-col items-center pt-3">
+<p class="text-xs font-bold truncate px-1">Molly R.</p>
+<p class="text-[10px] text-primary font-medium">980 pts</p>
+</div>
+</div>
+</div>
+<!-- Runner ups List -->
+<div class="bg-white rounded-2xl p-4 shadow-sm border border-[#f4ede7] flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="text-xs font-bold text-[#9c7349] w-4">4</span>
+<img alt="4th" class="size-10 rounded-full bg-background-light" data-alt="Male cartoon avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFAuUKbRlxwj7lS3uQVINPXRqM4jspB9uI-qSbP4JCDaXGrLoP2-9WjXEo-1rKDfxzpqHbMepowhoZcq821v5MTe61Kh3cfYKz2rLqsBmJe4W7DVrwWz5wm1mQvG_CG3UR5VEaCdzfhz3hlN3R3kqneQ10ky_gKlLLZHtk4i0WKMIDsPZP7RIy4OPT-dVCT3kWLKfs1xpNYMeWruglDDwOYlD3N8nr1MwTMwvRqVEonKyeztHbwPOVnqwkay_58c4bVL0dw0GoEwU"/>
+<span class="text-sm font-semibold">David K.</span>
+</div>
+<span class="text-xs font-bold text-primary">850 pts</span>
+</div>
+<div class="h-px bg-[#f4ede7] w-full"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="text-xs font-bold text-[#9c7349] w-4">5</span>
+<img alt="5th" class="size-10 rounded-full bg-background-light" data-alt="Female cartoon avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUbidswazkX9s0_wLv6liXbEwrq-AJyvKcGqspOhw0QNUKwtQeeQfFJp3qYk2aT0t78kyaK99yY1f2u-LtwzZwIWWmfzbQaV2uvTVf-vIwuwLjjMxH28Q7hZGPkwkwoxUGhJFNZxu_oJC6UvBVsdTHBaAFrsarn5OikA0_SlyvT4M_yTn5luLvH0Jm60rM1tezv85AXZOey6EpV31KZRkmK8JAipCVOhFpxLga-WsbHIbVWya4bw2zVoWoqByWjnjkG2iD1JzlwGI"/>
+<span class="text-sm font-semibold">Linda M.</span>
+</div>
+<span class="text-xs font-bold text-primary">720 pts</span>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation / Action -->
+<div class="relative z-10 px-4 pb-8 pt-2">
+<button class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/25 active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">home</span>
+                Back to Home Screen
+            </button>
+<p class="text-center text-[10px] text-[#9c7349] mt-4 uppercase tracking-[0.2em] font-bold">Miller-Smith Wedding 2024</p>
+</div>
+<!-- iOS Bottom Tab Bar Component (Modified for context) -->
+<div class="flex gap-2 border-t border-[#f4ede7] bg-white/80 backdrop-blur-md px-4 pb-6 pt-2 z-20">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 rounded-full text-primary" href="#">
+<div class="flex h-8 items-center justify-center" data-icon="House">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</div>
+<p class="text-[10px] font-bold leading-normal tracking-tight">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-[#9c7349]" href="#">
+<div class="flex h-8 items-center justify-center" data-icon="GameController">
+<span class="material-symbols-outlined text-[24px]">sports_esports</span>
+</div>
+<p class="text-[10px] font-medium leading-normal tracking-tight">Gallery</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-[#9c7349]" href="#">
+<div class="flex h-8 items-center justify-center" data-icon="User">
+<span class="material-symbols-outlined text-[24px]">person</span>
+</div>
+<p class="text-[10px] font-medium leading-normal tracking-tight">Profile</p>
+</a>
+</div>
+</div>
+</body></html>

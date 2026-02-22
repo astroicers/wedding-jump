@@ -100,9 +100,15 @@ export const PlayerGame: FC = () => {
       case 'answer':
         setCorrectAnswer(message.correctAnswer);
         setPhase('reveal');
-        // 計算得分
-        if (selectedAnswer === message.correctAnswer) {
-          // 答對了！
+        if (selectedAnswer === message.correctAnswer && currentPlayer) {
+          const scoreGained = message.score || 0;
+          useWsStore.getState().send({
+            type: 'scoreUpdate',
+            id: currentPlayer.name,
+            playerId: currentPlayer.playerId,
+            score: scoreGained,
+          });
+          setLastScoreGained(scoreGained);
         }
         break;
 
@@ -211,7 +217,7 @@ export const PlayerGame: FC = () => {
   const currentRank = currentPlayer
     ? leaderboard.findIndex((e) => e.playerId === currentPlayer.playerId) + 1 || '-'
     : '-';
-  const playersArray = Array.from(players.values());
+  const playersArray = Array.from(players.values()).filter(p => !p.isQuizMaster);
   if (currentPlayer) {
     playersArray.push(currentPlayer);
   }
